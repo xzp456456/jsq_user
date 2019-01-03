@@ -10,7 +10,7 @@
 						<div class="title pull-left">
 							办公室
 						</div>
-						<div class="openClose pull-right" @click="close()">
+						<div class="openClose pull-right" @click="showClose(true)">
 							<img src="../../assets/img/kg.png"/>
 						</div>
 					</div>
@@ -80,7 +80,7 @@
 		<mt-popup v-model="show" position="bottom">
        <div class="coll">
         <ul>
-          <li>关机</li>
+          <li @click="close()">关机</li>
           <li>强冲</li>
           <li>取消</li>
         </ul>
@@ -104,23 +104,27 @@ export default {
 		'v-footer':footer
 	},
 	methods:{
+		showClose(bool){
+			this.show = bool;
+		},
 		close(){
 			postAjax(api.shutdown,{})
 			.then(res=>{
-				console.log(res);
 				if(res.status){
+					this.show = false;
 					this.Toast({
 						message: res.msg,
-						position: 'bottom',
+						position: 'center',
 						duration: 1500
 					});
 				}else{
 					this.Toast({
 						message: res.msg,
-						position: 'bottom',
+						position: 'center',
 						duration: 1500
 					});
 				}
+				this.show = false;
 			})
 		},
 		navgateTo(url){
@@ -325,5 +329,28 @@ main .item .listImg img{
 	width: 100%;
 }
 
+.coll {
+  width: 100%;
+  text-align: center;
+  bottom: 0;
+  z-index: 99;
+}
+
+
+.coll ul li {
+  background: white;
+  width: 100%;
+  border-bottom: 1px solid #dfe1e3;
+  height: 1.6rem;
+  font-size: 0.46rem;
+  font-family: PingFang-SC-Medium;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 1);
+  line-height: 1.6rem;
+}
+
+.mint-popup-bottom{
+  width: 100%;
+}
 
 </style>
