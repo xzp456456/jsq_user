@@ -59,7 +59,7 @@
               <div class="changeImg pull-left">
                 <img src="../../assets/img/wf.png">
               </div>
-              <div class="changeImg pull-left" @click="controller()">
+              <div class="changeImg pull-left" @click="controller(true)">
                 <img src="../../assets/img/kgq.png">
               </div>
             </div>
@@ -74,7 +74,7 @@
         <ul>
           <li>关机</li>
           <li>强冲</li>
-          <li>取消</li>
+          <li @click="controller(false)">取消</li>
         </ul>
       </div>
     </mt-popup>
@@ -95,8 +95,8 @@ export default {
     navgateTo(url){
       this.$router.push(url);
     },
-    controller(){
-      this.show = true;
+    controller(bool){
+      this.show = bool;
     }
   }
 };
@@ -225,10 +225,7 @@ export default {
   margin-top: 0.2rem;
 }
 
-.btn {
-  width: 1.95rem;
-  height: 0.75rem;
-}
+
 
 .btn button {
   width: 1.95rem;

@@ -38,39 +38,42 @@
             </div>
           </div>
         </div>
-        <div class="list">
+        <div
+          class="list"
+          @click="popList([{name:'5米内',id:1},{name:'5-10米',id:2},{name:'10-30米',id:3},{name:'30米以上',id:4}],0)"
+        >
           <div class="row">
             <div class="name pull-left">进出水管长度</div>
             <div class="pull-right name_text">
-              <span class="text">5米内</span>
+              <span class="text">{{select.pipe_length_name}}</span>
               <img src="../../assets/img/in.png">
             </div>
           </div>
         </div>
-        <div class="list">
+        <div class="list" @click="popList([{name:'是',id:1},{name:'否',id:0}],1)">
           <div class="row">
             <div class="name pull-left">是否为市政自来水</div>
             <div class="pull-right name_text">
-              <span class="text">是</span>
-              <img src="../../assets/img/in.png">
+              <span class="text">{{select.is_city_name}}</span>
+              <img src="@/assets/img/in.png">
             </div>
           </div>
         </div>
-        <div class="list">
+        <div class="list" @click="popList([{name:'挂墙',id:1},{name:'厨下',id:2},{name:'台面',id:3}],2)">
           <div class="row">
             <div class="name pull-left">安装方式</div>
             <div class="pull-right name_text">
-              <span class="text">台面</span>
-              <img src="../../assets/img/in.png">
+              <span class="text">{{select.install_type_name}}</span>
+              <img src="@/assets/img/in.png">
             </div>
           </div>
         </div>
-        <div class="list">
+        <div class="list" @click="popList([{name:'是',id:1},{name:'否',id:0}],3)">
           <div class="row">
             <div class="name pull-left">是否有改装</div>
             <div class="pull-right name_text">
-              <span class="text">是</span>
-              <img src="../../assets/img/in.png">
+              <span class="text">{{select.is_refit_name}}</span>
+              <img src="@/assets/img/in.png">
             </div>
           </div>
         </div>
@@ -78,34 +81,37 @@
       <div class="problem">
         <p class="id">自动检查原因</p>
         <div class="itemProblem">
-          <div class="pull-left list_p">
-            <button>APP报设备漏水</button>
-          </div>
-          <div class="pull-left list_p">
-            <button>净水器不制水</button>
-          </div>
-          <div class="pull-left list_p">
-            <button>设备信号差</button>
+          <div class="pull-left list_p" v-for="(btn,index) in btnText" :key="index">
+            <button :class="{'active':index==tapIndex}" @click="tap(index)">{{btn}}</button>
           </div>
         </div>
       </div>
       <div class="texta">
-        <textarea placeholder="请描述您的问题" name rows cols></textarea>
+        <textarea placeholder="请描述您的问题" v-model="info.desc"></textarea>
         <div class="file">
           <div class="file_all">
-            <div class="imgFile" :style="{background:'url('+bg[0].url+')no-repeat center',backgroundSize: '100%'}">
+            <div
+              class="imgFile"
+              :style="{background:'url('+bg[0].url+')no-repeat center',backgroundSize: '100%'}"
+            >
               <input type="file" class="tranform" @change="getFileUp($event,0)">
             </div>
             <p>故障位置图</p>
           </div>
           <div class="file_all">
-            <div class="imgFile"  :style="{background:'url('+bg[1].url+')no-repeat center',backgroundSize: '100%'}">
-              <input type="file" class="tranform"  @change="getFileUp($event,1)">
+            <div
+              class="imgFile"
+              :style="{background:'url('+bg[1].url+')no-repeat center',backgroundSize: '100%'}"
+            >
+              <input type="file" class="tranform" @change="getFileUp($event,1)">
             </div>
             <p>液晶屏图片</p>
           </div>
           <div class="file_all">
-            <div class="imgFile"  :style="{background:'url('+bg[2].url+')no-repeat center',backgroundSize: '100%'}">
+            <div
+              class="imgFile"
+              :style="{background:'url('+bg[2].url+')no-repeat center',backgroundSize: '100%'}"
+            >
               <input type="file" @change="getFileUp($event,2)" class="tranform">
             </div>
             <p>其他图片</p>
@@ -113,44 +119,115 @@
         </div>
       </div>
 
-      <div class="btn">
-        <button>提交</button>
-      </div>
+      <v-btn @actionClick="repair">提交</v-btn>
       <div class="server">
         <p>客服电话：0592 XXXXXXXX</p>
       </div>
     </main>
-    <footer></footer>
+    <mt-popup v-model="show" position="bottom">
+      <mt-picker :slots="slots" @change="changeValue" :showToolbar="false" :value-key="'name'"></mt-picker>
+    </mt-popup>
   </div>
 </template>
 <script>
-import * as api from "../../api/api";
-import { postAjax, postFileUp } from "../../api/axios";
+import * as api from "@/api/api";
+import { postAjax, postFileUp } from "@/api/axios";
+import btn from "@/components/btn";
 export default {
   data() {
     return {
+      show: false,
+      select: {},
+      selectIndex: "",
+      tapIndex: 0,
+      slots: [
+        {
+          flex: 1,
+          values: [],
+          className: "slot1",
+          textAlign: "center"
+        }
+      ],
       info: {},
-      bg:[
-        {url:require('../../assets/img/img.png')},
-        {url:require('../../assets/img/img.png')},
-        {url:require('../../assets/img/img.png')}
-      ]
-        
-      
+      bg: [
+        { url: require("../../assets/img/img.png") },
+        { url: require("../../assets/img/img.png") },
+        { url: require("../../assets/img/img.png") }
+      ],
+      btnText: ["APP报设备漏水", "净水器不制水", "设备信号差"]
     };
   },
   methods: {
-    getFileUp(e,el) {
+    getFileUp(e, el) {
       let data = new FormData();
       data.append("files[]", e.target.files[0]);
       data.append("openid", 123456);
       postFileUp(api.upload, data).then(res => {
-        if(res.status){
+        if (res.status) {
           console.log(res);
-            this.bg[el].url ='http://jsq.yxsoft.net'+ res.data.list[0].url
+          this.bg[el].url = "http://jsq.yxsoft.net" + res.data.list[0].url;
+          if (el == 0) {
+            this.info.fault_location_file_id = res.data.list[0].file_id;
+          }
+          if (el == 1) {
+            this.info.lcd_file_id = res.data.list[0].file_id;
+          }
+          if (el == 2) {
+            this.info.other_file_ids = res.data.list[0].file_id;
+          }
+        }
+      });
+    },
+    popList(slot, index) {
+      this.slots[0].values = slot;
+      this.show = true;
+      this.selectIndex = index;
+    },
+    changeValue(picker, values) {
+      switch (this.selectIndex) {
+        case 0:
+          this.select.pipe_length_name = values[0].name;
+          this.info.pipe_length = values[0].id;
+          break;
+        case 1:
+          this.select.is_city_name = values[0].name;
+          this.info.is_city = values[0].id;
+          break;
+        case 2:
+          this.select.install_type_name = values[0].name;
+          this.info.install_type = values[0].id;
+          break;
+        case 3:
+          this.select.is_refit_name = values[0].name;
+          this.info.is_refit = values[0].id;
+          break;
+      }
+    },
+    tap(index) {
+      this.tapIndex = index;
+      this.info.auto_detect_reason = index + 1;
+    },
+    repair() {
+      let data = this.info;
+      postAjax(api.repairAdd, data).then(res => {
+        if (res.status) {
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
+        } else {
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
         }
       });
     }
+  },
+  components: {
+    "v-btn": btn
   }
 };
 </script>
@@ -251,17 +328,21 @@ export default {
 }
 
 .list_p button {
-  width: 3rem;
+  width: 2.8rem;
   height: 0.68rem;
-  background: rgba(26, 173, 255, 1);
+  margin: 0 0.1rem;
   border-radius: 0rem;
-  font-size: 0.37rem;
+  font-size: 0.33rem;
   font-family: PingFang-SC-Medium;
   font-weight: 500;
   color: rgba(255, 255, 255, 1);
   border-radius: 0.4rem;
   outline: none;
   border: none;
+}
+
+.active {
+  background: rgba(26, 173, 255, 1);
 }
 
 .problem {
@@ -338,5 +419,9 @@ export default {
   opacity: 0;
   width: 100%;
   height: 100%;
+}
+
+.mint-popup-bottom {
+  width: 100%;
 }
 </style>

@@ -13,6 +13,8 @@ export const shutdown = 'user/device/shutdown';
 
 export const upload = 'user/file/upload';
 
+export const repairAdd = 'user/repair/add'
+
 export const  recharge = 'user/recharge/getRechargePacketList'
 
 export const createOrder = 'user/recharge/createOrder'
@@ -24,3 +26,4 @@ export const forceFlush = 'user/device/forceFlush'
 export const getDeviceModelList = 'user/device/getDeviceModelList'
 
 export const getRechargePacketList = 'user/recharge/getRechargePacketList'
+

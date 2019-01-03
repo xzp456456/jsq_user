@@ -82,7 +82,7 @@
         <ul>
           <li @click="closePunch(urlApi.shutdown)">关机</li>
           <li @click="closePunch(urlApi.forceFlush)">强冲</li>
-          <li>取消</li>
+          <li @click="showClose(false)">取消</li>
         </ul>
       </div>
    		 </mt-popup>
