@@ -13,7 +13,7 @@
               <p class="info_c">设 备 ID：5522</p>
               <p class="info_c">剩余流量：552L</p>
             </div>
-            <div class="tl pull-right" @click="controller()">
+            <div class="tl pull-right" @click="navgateTo('self')">
               <img src="../../assets/img/tl.png">
             </div>
           </div>
@@ -59,25 +59,16 @@
               <div class="changeImg pull-left">
                 <img src="../../assets/img/wf.png">
               </div>
-              <div class="changeImg pull-left">
+              <div class="changeImg pull-left" @click="controller()">
                 <img src="../../assets/img/kgq.png">
               </div>
             </div>
           </div>
         </div>
       </div>
-      <v-btn @actionClick="navgateTo('addEquipment')">添加设备</v-btn>
+      
     </main>
-    <footer></footer>
-    <!-- <div class="layerOut">
-      <div class="coll">
-        <ul>
-          <li>关机</li>
-          <li>强冲</li>
-          <li>取消</li>
-        </ul>
-      </div>
-    </div> -->
+    <v-btn @actionClick="navgateTo('addEquipment')">添加设备</v-btn>
      <mt-popup v-model="show" position="bottom">
        <div class="coll">
         <ul>
@@ -90,7 +81,7 @@
   </div>
 </template>
 <script>
-import btn from '../../components/btn'
+import btn from '@/components/btn'
 export default {
   data(){
     return{

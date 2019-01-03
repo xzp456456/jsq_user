@@ -5,13 +5,13 @@
 				<div class="row">
 					<div class="header_lr">
 						<div class="wilf pull-left">
-							<img src="../../assets/img/sw.png"/>
+							<img src="@/assets/img/sw.png"/>
 						</div>
 						<div class="title pull-left">
 							办公室
 						</div>
 						<div class="openClose pull-right" @click="showClose(true)">
-							<img src="../../assets/img/kg.png"/>
+							<img src="@/assets/img/kg.png"/>
 						</div>
 					</div>
 					<div class="gauge">
@@ -32,7 +32,7 @@
 			<div class="water">
 				<div class="water_left">
 					<div class="pull-left imgWid">
-						<img src="../../assets/img/shui.png"/>
+						<img src="@/assets/img/shui.png"/>
 					</div>
 					<div class="pull-left pd">
 						<p class="waterP">原水TDS</p>
@@ -41,7 +41,7 @@
 				</div>
 				<div class="water_right">
 					<div class="pull-left imgWis">
-						<img src="../../assets/img/shui2.png"/>
+						<img src="@/assets/img/shui2.png"/>
 					</div>
 					<div class="pull-left pd">
 						<p class="waterP">纯水TDS</p>
@@ -59,19 +59,19 @@
 			</div>
 			<div class="item">
 				<div class="list" @click="navgateTo('equipment')">
-				<div class="listImg"><img src="../../assets/img/1.png"/></div>
+				<div class="listImg"><img src="@/assets/img/1.png"/></div>
 					<p>我的设备</p>
 				</div>
 				<div class="list" @click="navgateTo('recharge')">
-					<div class="listImg"><img src="../../assets/img/2.png"/></div>
+					<div class="listImg"><img src="@/assets/img/2.png"/></div>
 					<p>我要充值</p>
 				</div>
 				<div class="list" @click="navgateTo('Element')">
-					<div class="listImg"><img src="../../assets/img/3.png"/></div>
+					<div class="listImg"><img src="@/assets/img/3.png"/></div>
 					<p>我的滤芯</p>
 				</div>
 				<div class="list" @click="navgateTo('repair')">
-					<div class="listImg"><img src="../../assets/img/4.png"/></div>
+					<div class="listImg"><img src="@/assets/img/4.png"/></div>
 					<p>我要报修</p>
 				</div>
 			</div>
@@ -80,8 +80,8 @@
 		<mt-popup v-model="show" position="bottom">
        <div class="coll">
         <ul>
-          <li @click="close()">关机</li>
-          <li>强冲</li>
+          <li @click="closePunch(urlApi.shutdown)">关机</li>
+          <li @click="closePunch(urlApi.forceFlush)">强冲</li>
           <li>取消</li>
         </ul>
       </div>
@@ -89,15 +89,16 @@
     </div>
 </template>
 <script>
-import { getAjax,postAjax } from '../../api/axios'
-import footer from '../../components/footer'
-import * as types from '../../vuex/types'
-import * as api from '../../api/api'
+import { getAjax,postAjax } from '@/api/axios'
+import footer from '@/components/footer'
+import * as types from '@/vuex/types'
+import * as api from '@/api/api'
 export default {
 	name:'index',
 	data(){
 		return{
-			show:false
+			show:false,
+			urlApi:api
 		}
 	},
 	components:{
@@ -107,8 +108,8 @@ export default {
 		showClose(bool){
 			this.show = bool;
 		},
-		close(){
-			postAjax(api.shutdown,{})
+		closePunch(url){
+			postAjax(url,{})
 			.then(res=>{
 				if(res.status){
 					this.show = false;

@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       lists: [],
-      tab: 1,
+      tab: 0,
       packet_id: ""
     };
   },

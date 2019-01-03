@@ -15,7 +15,7 @@
             <div class="name pull-left">设备型号</div>
             <div class="pull-right name_text">
               <span class="text">{{value}}</span>
-              <img src="../../assets/img/in.png">
+              <img src="@/assets/img/in.png">
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@
             <div class="name pull-left">省市区</div>
             <div class="pull-right name_text">
               <span class="text">{{add.province}}-{{add.city}}-{{add.area}}</span>
-              <img src="../../assets/img/in.png">
+              <img src="@/assets/img/in.png">
             </div>
           </div>
         </div>
@@ -73,18 +73,18 @@
 </template>
 
 <script>
-import Picker from "../../components/Picker";
-import listInput from "../../components/listInput";
-import btn from "../../components/btn";
-import { postAjax } from "../../api/axios";
-import * as api from "../../api/api";
+import Picker from "@/components/Picker";
+import listInput from "@/components/listInput";
+import btn from "@/components/btn";
+import { postAjax } from "@/api/axios";
+import * as api from "@/api/api";
 const address = require("../../../static/json/address.json");
 
 export default {
   name: "addEquipment",
   data() {
     return {
-      value: "家用II型（LANMAX-185",
+      value: "",
       add: {},
       show: false,
       show2: false,
@@ -115,13 +115,13 @@ export default {
         {
           flex: 1,
           values: [{ name: "东城区", id: "110100" }],
-          className: "slot2",
-          textAlign: "center"
+          className: "slot3",
+          textAlign: "right"
         }
       ]
     };
   },
-  mounted() {
+  created() {
     this.province();
     this.getDeviceModelList();
   },

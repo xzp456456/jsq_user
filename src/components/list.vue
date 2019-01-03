@@ -4,7 +4,7 @@
 					<div class="row">
 						<div class="name pull-left">{{leftName}}</div>
 						<div class="pull-right">
-							<input type="text" name="" id="" value="" :placeholder="inputName" />
+							<slot></slot>
 						</div>
 					</div>
 				</div>

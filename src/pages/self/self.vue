@@ -1,23 +1,58 @@
 <template>
   <div>
-    <header></header>
     <main>
-      <list leftName="设备ID" inputName="请填写设备ID"></list>
-      <list leftName="设备地址" inputName="请填写设备别名"></list>
-      <Btn btnName="提交"></Btn>
+      <list leftName="设备ID">
+        <input type="text" v-model="equip.device_id" placeholder="请填写设备ID">
+      </list>
+      <list leftName="设备地址">
+        <input type="text" v-model="equip.device_name" placeholder="请填写设备别名">
+      </list>
+      <Btn @actionClick="editDevice">提交</Btn>
     </main>
-    <footer></footer>
   </div>
 </template>
 <script>
-import Btn from "../../components/btn";
-import list from "../../components/list";
+import Btn from "@/components/btn";
+import list from "@/components/list";
+import { postAjax } from "@/api/axios";
+import * as api from "@/api/api";
 export default {
+  data() {
+    return {
+      equip: {}
+    };
+  },
+
+  methods: {
+    editDevice() {
+      let data = {
+        device_id: this.equip.device_id,
+        device_name: this.equip.device_name
+      };
+      postAjax(api.editDevice, data).then(res => {
+        if (res.status) {
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
+          setTimeout(() => {
+            this.$router.push("equipment");
+          }, 1500);
+        } else {
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
+        }
+      });
+    }
+  },
   components: {
     Btn,
     list
-  },
-  methods: {}
+  }
 };
 </script>
 <style scoped="">

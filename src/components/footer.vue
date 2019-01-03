@@ -2,23 +2,41 @@
     <div>
         <footer>
 			<div class="footer">
-				<div class="item_home" @click="navgateTo('/')">
-					<div><img src="../assets/img/home.png"/></div>
-					<p>首页</p>
-				</div>
-				<div class="item_home" @click="navgateTo('wd')">
-					<div><img src="../assets/img/w.png"/></div>
-					<p>我的</p>
-				</div>
+				<router-link tag="div" exact class="item_home" :to="link.url" v-for="(link,index) in links" :key="index">
+					<div><img :src="link.image"/></div>
+					<p>{{link.text}}</p>
+				</router-link >
 			</div>
 		</footer>
     </div>
 </template>
 <script>
 export default {
+	data(){
+		return{
+			links:[
+				{image:require('../assets/img/home.png'),text:'首页',url:'/'},
+				{image:require('../assets/img/w.png'),text:'我的',url:'wd'}
+			]
+		}
+	},
+	created(){
+		this.changeImg(this.$route.name);
+	},
     methods:{
 		navgateTo(url){
 			this.$router.push(url);
+		},
+		changeImg(name){
+			switch(name){
+				case 'index':
+				this.links[0].image = require('../assets/img/home-active.png');
+				break;
+				case 'wd':
+				this.links[1].image = require('../assets/img/w-active.png');
+				break;
+			}
+		
 		}
 	}
 }
@@ -46,5 +64,7 @@ footer .item_home{
 	height:0.59rem;
 }
 
-
+.router-link-active p{
+	color: #49BFFF;
+}
 </style>

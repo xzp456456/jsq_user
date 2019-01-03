@@ -1,6 +1,3 @@
-export const getDeviceModelList = 'user/device/getDeviceModelList'
-
-export const getRechargePacketList = 'user/recharge/getRechargePacketList'
 
 export const addDevice = 'user/device/addDevice';
 
@@ -19,3 +16,11 @@ export const upload = 'user/file/upload';
 export const  recharge = 'user/recharge/getRechargePacketList'
 
 export const createOrder = 'user/recharge/createOrder'
+
+export const editDevice = 'user/device/editDevice'
+
+export const forceFlush = 'user/device/forceFlush'
+
+export const getDeviceModelList = 'user/device/getDeviceModelList'
+
+export const getRechargePacketList = 'user/recharge/getRechargePacketList'
