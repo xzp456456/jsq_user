@@ -131,6 +131,7 @@ export default {
     this.getInfo();
   },
   methods: {
+    //获取用户信息
     getInfo() {
       postAjax(api.getInfo, {}).then(res => {
         if (res.status) {
