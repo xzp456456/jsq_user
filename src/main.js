@@ -6,10 +6,12 @@ import router from './router'
 import store from './vuex/store';
 import 'mint-ui/lib/style.css';
 
-import { Picker,Popup,Toast } from 'mint-ui';
+import { Picker,Popup,Toast,InfiniteScroll,Loadmore } from 'mint-ui';
 Vue.prototype.Toast = Toast;
 Vue.component(Picker.name,Picker);
 Vue.component(Popup.name, Popup);
+Vue.component(Loadmore.name, Loadmore);
+Vue.use(InfiniteScroll);
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({

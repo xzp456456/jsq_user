@@ -11,6 +11,8 @@ export const repair = 'user/repair/getList';
 
 export const shutdown = 'user/device/shutdown';
 
+export const boot = 'user/device/boot'
+
 export const upload = 'user/file/upload';
 
 export const repairAdd = 'user/repair/add'
@@ -27,3 +29,4 @@ export const getDeviceModelList = 'user/device/getDeviceModelList'
 
 export const getRechargePacketList = 'user/recharge/getRechargePacketList'
 
+export const myOrderList = 'user/order/myOrderList'

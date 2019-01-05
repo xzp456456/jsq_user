@@ -12,9 +12,9 @@
   </div>
 </template>
 <script>
-import btn from '../../components/btn'
-import { postAjax } from "../../api/axios";
-import * as api from "../../api/api";
+import btn from '@/components/btn'
+import { postAjax } from "@/api/axios";
+import * as api from "@/api/api";
 export default {
   data(){
     return{
@@ -57,6 +57,10 @@ export default {
 .list p {
   width: 90%;
   margin: 0 auto;
+}
+
+.main{
+  margin-bottom: 1rem;
 }
 
 .listOne {

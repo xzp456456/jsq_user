@@ -2,37 +2,43 @@
   <div>
     <div class="nav">
       <ul>
-        <li>全部</li>
-        <li>未支付</li>
-        <li>已支付</li>
-        <li>已发货</li>
-        <li>已完成</li>
+        <li v-for="(nav,index) in navs" :key="index" :class="{active:index==tabIndex}"  @click="navTab(index)">{{nav}}</li>
       </ul>
     </div>
-    <div class="orderList">
+    <div>
+   
+  <div class="orderItem">
+    <div class="orderList" v-for="(list,index) in lists" :key="index">
       <div class="row">
         <div class="title">
-          <div class="orderId pull-left">订单编号：18070514570001</div>
-          <div class="status pull-right">未支付</div>
+          <div class="orderId pull-left">订单编号：{{list.order_id}}</div>
+          <div class="status pull-right" v-if="list.status==0">未支付</div>
+          <div class="status pull-right" v-if="list.status==1">已支付</div>
+          <div class="status pull-right" v-if="list.status==2">已完成</div>
+          <div class="status pull-right" v-if="list.status==3">已发货</div>
         </div>
         <div class="numInfo">
           <div class="num">
-            <p>980元3500升（0.28元/升）</p>
+            <p>{{list.order_name}}</p>
             <p>
-              <span class="pull-left money">¥ 40</span>
+              <span class="pull-left money">¥ {{list.packet_price}}</span>
               <span class="pull-right nums">x1</span>
             </p>
           </div>
         </div>
         <div class="total">合计:
-          <span class="money_toall">￥40.00</span>
+          <span class="money_toall">￥{{list.amount}}</span>
         </div>
         <div class="btn">
           <button>去付款</button>
         </div>
       </div>
     </div>
-    <div class="orderList">
+
+    </div>
+    
+    </div>
+    <!-- <div class="orderList">
       <div class="row">
         <div class="title">
           <div class="orderId pull-left">订单编号：18070514570001</div>
@@ -51,11 +57,53 @@
           <span class="money_toall">￥40.00</span>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
-export default {};
+import {postAjax} from '@/api/axios'
+import * as api from '@/api/api'
+import Vmore from '@/components/Loadmore'
+export default {
+  data(){
+    return{
+      navs:['全部','未支付','已支付','已发货','已完成'],
+      lists:[],
+      tabIndex:0,
+      order:{page_size:0,page:1},
+      loading :false
+    }
+  },
+  created(){
+    //this.getOrder()
+  },
+  methods:{
+    getOrder(){
+      let data = this.order;
+      postAjax(api.myOrderList,data)
+      .then(res=>{
+        if(res.status){
+          this.lists =[...this.lists,...res.data];
+        }
+      })
+    },
+    navTab(index){
+      this.tabIndex = index;
+      this.order.status = index-1;
+      if(this.order.status<0){
+        this.order.status = "";
+      }
+      this.getOrder(); 
+    },
+    Loadmore(){
+     this.order.page_size = this.order.page_size+10;
+      this.getOrder(); 
+    }
+  },
+  components:{
+    'v-more':Vmore
+  }
+};
 </script>
 <style scoped="">
 
@@ -81,7 +129,8 @@ li {
 
 .nav ul li {
   float: left;
-  margin: 0.41rem;
+  margin:0 0.41rem;
+  line-height:  1.28rem;
   font-size: 0.41rem;
   font-family: PingFang-SC-Medium;
   font-weight: 500;
@@ -189,5 +238,9 @@ li {
   width: 100%;
   height: 5.16rem;
   padding-top: 0.3rem;
+}
+
+.active{
+  border-bottom: .053333rem solid #1AADFF; 
 }
 </style>
