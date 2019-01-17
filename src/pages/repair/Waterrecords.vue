@@ -5,38 +5,60 @@
       <div class="item">
         <div class="list">
           <div class="row">
-            <div class="pull-left title">累计进水量</div>
-            <div class="pull-right text_right">113升</div>
+            <div class="pull-left title">累计净水量</div>
+            <div class="pull-right text_right">{{info.usedFlow}}升</div>
           </div>
         </div>
         <div class="list">
           <div class="row">
             <div class="pull-left title">已守护时长</div>
-            <div class="pull-right text_right">44天</div>
+            <div class="pull-right text_right">{{info.usedTime}}天</div>
           </div>
         </div>
         <div class="list">
           <div class="row">
             <div class="pull-left title">本次用水</div>
-            <div class="pull-right text_right">76升</div>
+            <div class="pull-right text_right">{{info.thisFlow}}升</div>
           </div>
         </div>
         <div class="list">
           <div class="row">
             <div class="pull-left title">本次套餐余量</div>
-            <div class="pull-right text_right">32升</div>
+            <div class="pull-right text_right">{{info.restFlow}}升</div>
           </div>
         </div>
       </div>
       <div class="btn">
-        <button>购买套餐</button>
+        <button @click="navgateTo('recharge')">购买套餐</button>
       </div>
     </main>
     <footer></footer>
   </div>
 </template>
 <script>
-export default {};
+import * as api from "@/api/api";
+import { postAjax } from "@/api/axios";
+export default {
+  data(){
+    return{
+      info:{}
+    }
+  },
+  created(){
+    this.query()
+  },
+  methods:{
+    query(){
+      postAjax(api.query,{})
+      .then(res=>{
+        this.info = res.data;
+      })
+    },
+    navgateTo(url){
+      this.$router.push(url)
+    }
+  }
+};
 </script>
 <style scoped="">
 .pull-left {

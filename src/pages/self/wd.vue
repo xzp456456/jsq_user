@@ -20,7 +20,7 @@
     </header>
     <main>
       <div class="order">
-        <div class="row" @click="navgateTo('order')">
+        <div class="row" @click="navgateQuery('order',-1)">
           <div class="pull-left myOrder">我的订单</div>
           <div class="pull-right allOrder">
             <div class="pull-left alltext">全部订单</div>
@@ -30,25 +30,25 @@
           </div>
         </div>
         <div class="payAll">
-          <div class="paylist" @click="navgateTo('order')">
+          <div class="paylist" @click="navgateQuery('order',0)">
             <div class="pay">
               <img src="../../assets/img/s1.png">
             </div>
             <div class="ptext">未支付</div>
           </div>
-          <div class="paylist" @click="navgateTo('order')">
+          <div class="paylist" @click="navgateQuery('order',1)">
             <div class="pay">
               <img src="../../assets/img/s3.png">
             </div>
             <div class="ptext">已支付</div>
           </div>
-          <div class="paylist" @click="navgateTo('order')">
+          <div class="paylist" @click="navgateQuery('order',2)">
             <div class="pay">
               <img src="../../assets/img/s2.png">
             </div>
             <div class="ptext">已发货</div>
           </div>
-          <div class="paylist" @click="navgateTo('order')">
+          <div class="paylist" @click="navgateQuery('order',3)">
             <div class="pay">
               <img src="../../assets/img/s4.png">
             </div>
@@ -56,7 +56,7 @@
           </div>
         </div>
         <div class="item">
-          <div class="list" @click="navgateTo('equipment')">
+          <div class="list" @click="navgateTo('manage')">
             <div class="pull-left">
               <div class="listImg pull-left">
                 <img src="../../assets/img/trade.png">
@@ -92,7 +92,7 @@
           <div class="list" @click="navgateTo('distributor')">
             <div class="pull-left">
               <div class="listImg pull-left">
-                <img src="../../assets/img/trade-assurance .png">
+                <img src="../../assets/img/trade-assurance.png">
               </div>
               <div class="pull-left text">经销商信息</div>
             </div>
@@ -139,9 +139,14 @@ export default {
         }
       });
     },
-    navgateTo(url) {
+    navgateTo(url,id) {
       this.$router.push(url);
+    },
+    navgateQuery(url,id){
+      this.$router.push(url);
+      localStorage.setItem('tab',id)
     }
+    
   },
   components: {
     "v-footer": footer
@@ -260,6 +265,8 @@ export default {
 .paylist {
   float: left;
   text-align: center;
+  width: 2.1rem;
+  margin: 0.5rem 0;
 }
 
 .pay {
@@ -273,9 +280,7 @@ export default {
   width: 100%;
 }
 
-.paylist {
-  margin: 0.586666rem;
-}
+
 
 .item {
   clear: both;

@@ -10,17 +10,21 @@
               <img src="@/assets/img/sd.png">
             </div>
             <div class="info pull-left">
-              <p class="info_t">{{info.device_name}}</p>
-              <p class="info_c">设 备 ID：{{info.eId}}</p>
+              <p class="info_t pull-left">{{info.device_name}}</p>
+              <div class="tl pull-left" style="padding-left:0.2rem"  @click.stop="navgateQuery('self',info.eId)">
+              <img src="@/assets/img/tl.png">
+            </div>
+              <p class="info_c" style="clear:both;">设 备 ID：{{info.eId}}</p>
               <p class="info_c">剩余流量：{{info.restFlow?info.restFlow:0}}L</p>
             </div>
-            <div class="tl pull-right" @click.stop="navgateQuery('self',info.eId)">
-              <img src="@/assets/img/tl.png">
+            
+            <div class="pull-right">
+                <button class="share" @click.stop="shareAction(true,info.eId)">分享设备</button>
             </div>
           </div>
           <div class="list_state">
             <div class="stateLeft pull-left">状态：
-              <span class="state">{{0}}</span>
+              <span class="state">{{info.eStateDesc}}</span>
             </div>
             <div class="pull-right stateRight">
               <span>原水：{{info.rawTDS?list.rawTDS:0}}PPM</span>
@@ -66,72 +70,12 @@
             </div>
           </div>
         </div>
-        <p class="pds">可用设备</p>
-        <div class="list" v-for="(list,index) in lists" :key="index" @click.stop="changeCurrnetDevice(list.device_id)">
-          <div class="list_top">
-            <div class="main_img pull-left">
-              <img src="@/assets/img/sd.png">
-            </div>
-            <div class="info pull-left">
-              <p class="info_t">{{list.device_name}}</p>
-              <p class="info_c">设 备 ID：{{list.device_id}}</p>
-              <p class="info_c">剩余流量：{{list.restFlow?list.restFlow:0}}L</p>
-            </div>
-            <div class="tl pull-right" @click.stop="navgateQuery('self',list.device_id)">
-              <img src="@/assets/img/tl.png">
-            </div>
-          </div>
-          <div class="list_state">
-            <div class="stateLeft pull-left">状态：
-              <span class="state">{{list.device_info.eStateDesc?list.device_info.eStateDesc:'未连接'}}</span>
-            </div>
-            <div class="pull-right stateRight">
-              <span>原水：{{list.rawTDS?list.rawTDS:0}}PPM</span>
-              <span>净水：{{list.purityTDS?list.purityTDS:0}}PPM</span>
-            </div>
-          </div>
-          <div class="status">
-            <div class="status_name pull-left">滤芯状态：</div>
-            <div class="navList pull-left">
-              <div class="list_n pull-left">
-                <div class="num">{{list.device_info.F1Flux?parseInt((list.device_info.F1Flux/list.device_info.F1FluxMax)*100):0}}%</div>
-                <div class="name">PP</div>
-              </div>
-              <div class="list_n pull-left">
-                <div class="num">{{list.device_info.F2Flux?parseInt((list.device_info.F2Flux/list.device_info.F2FluxMax)*100):0}}%</div>
-                <div class="name">udf</div>
-              </div>
-              <div class="list_n pull-left">
-                <div class="num">{{list.device_info.F3Flux?parseInt((list.device_info.F3Flux/list.device_info.F3FluxMax)*100):0}}%</div>
-                <div class="name">pp</div>
-              </div>
-              <div class="list_n pull-left">
-                <div class="num">{{list.device_info.F4Flux?parseInt((list.device_info.F4Flux/list.device_info.F4FluxMax)*100):0}}%</div>
-                <div class="name">ro</div>
-              </div>
-              <div class="list_n pull-left">
-                <div class="num">{{list.device_info.F5Flux?parseInt((list.device_info.F5Flux/list.device_info.F5FluxMax)*100):0}}%</div>
-                <div class="name">t33</div>
-              </div>
-            </div>
-          </div>
-          <div class="btnList">
-            <div class="btn pull-left" >
-              <button @click.stop="navgateTo('recharge')">我要充值</button>
-            </div>
-            <div class="pull-right">
-              <div class="changeImg pull-left">
-                <img src="@/assets/img/wf.png">
-              </div>
-              <div class="changeImg pull-left" @click.stop="controller(false)">
-                <img src="@/assets/img/kgq.png">
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       
     </main>
+     <div class="qs" v-show="share" @click="shareAction(false)">
+        <div id="qrcode"></div>
+      </div>
     <v-btn @actionClick="navgateTo('addEquipment')">添加设备</v-btn>
     <div style="width:100%;height:2rem"></div>
      <mt-popup v-model="show" position="bottom">
@@ -139,10 +83,11 @@
         <ul>
           <li @click.stop="actionEquip(1)">关机</li>
           <li @click.stop="actionEquip(2)">强冲</li>
-          <li @click.stop="actionShow()">取消</li>
+          <li @click.stop="controller(false)">取消</li>
         </ul>
       </div>
     </mt-popup>
+
   </div>
 </template>
 <script>
@@ -153,6 +98,7 @@ import QRCode from "qrcodejs2";
 export default {
   data(){
     return{
+        share:false,
       info:{},
       show:false,
       data:{
@@ -164,16 +110,20 @@ export default {
     }
   },
   created(){
-    
     this.myOtherDeviceList();
     this.query()
+  },
+  mounted(){
+      
+
   },
   components:{
     'v-btn':btn
   },
   methods:{
-    actionShow(){
-      this.show = false;
+    shareAction(bool,id){
+        this.share = bool;
+        
     },
     actionEquip(action){
       let data = {}
@@ -204,6 +154,7 @@ export default {
         console.log(res);
         this.info = res.data;
         this.device_id = res.data.eId;
+        this.qrcode()
       })
     },
     changeCurrnetDevice(id){
@@ -234,15 +185,16 @@ export default {
       this.$router.push(url);
       localStorage.setItem('device_id',id);
     },
-    controller(bool){
-      this.show = bool;
-      if(!bool){
-        this.Toast({
-            message: '未连接的设备不可发起指令',
-            position: "center",
-            duration: 1500
-          })
-      }
+    qrcode() {
+      let domWidth = document.body.clientWidth / 2;
+      let url = 'http://www.iyunmima.com/view/users/index.html?device_id='+this.device_id+'#/share'
+      let qrcode = new QRCode("qrcode", {
+        width: domWidth,
+        height: domWidth, // 高度
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        text: url
+      });
     },
     myOtherDeviceList(){
       let data = this.data;
@@ -360,6 +312,19 @@ export default {
   text-align: center;
 }
 
+.share{
+    width: 1.75rem;
+    height: 0.65rem;
+    background: rgba(26, 173, 255, 1);
+    border-radius: 0.5rem;
+    font-size: 0.25rem;
+    font-family: PingFang-SC-Medium;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 1);
+}
+
 .name {
   font-size: 0.4rem;
   font-family: PingFang-SC-Medium;
@@ -457,6 +422,23 @@ export default {
 
 img {
   width: 60%;
+}
+
+.qs{
+  position:fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#qrcode {
+ position: absolute;
+	top: 50%;
+	left: 50%;
+  border: .266667rem solid #ffffff;
+	transform: translate(-50%, -50%);
+  
 }
 
 .pds{

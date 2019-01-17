@@ -11,7 +11,7 @@
     <div class="orderList" v-for="(list,index) in lists" :key="index">
       <div class="row">
         <div class="title">
-          <div class="orderId pull-left">订单编号：{{list.order_id}}</div>
+          <div class="orderId pull-left">订单时间：{{list.create_time}}</div>
           <div class="status pull-right" v-if="list.status==0">未支付</div>
           <div class="status pull-right" v-if="list.status==1">已支付</div>
           <div class="status pull-right" v-if="list.status==2">已完成</div>
@@ -29,9 +29,9 @@
         <div class="total">合计:
           <span class="money_toall">￥{{list.amount}}</span>
         </div>
-        <div class="btn">
-          <button>去付款</button>
-        </div>
+        <div class="btn" v-if="list.status==0">
+          <button @click="pay(list.order_id)">去付款</button>
+          </div>
       </div>
     </div>
 
@@ -75,7 +75,10 @@ export default {
     }
   },
   created(){
-    //this.getOrder()
+    this.getWxInfo();
+     this.tabIndex = parseInt(localStorage.getItem('tab'))+1;
+     this.order.status = parseInt(localStorage.getItem('tab'));
+    this.getOrder();
   },
   methods:{
     getOrder(){
@@ -83,7 +86,7 @@ export default {
       postAjax(api.myOrderList,data)
       .then(res=>{
         if(res.status){
-          this.lists =[...this.lists,...res.data];
+          this.lists = res.data;
         }
       })
     },
@@ -98,6 +101,82 @@ export default {
     Loadmore(){
      this.order.page_size = this.order.page_size+10;
       this.getOrder(); 
+    },
+     pay(order_id) {
+      let data = {
+        order_id: order_id
+      };
+      postAjax(api.payOrder, data).then(res => {
+        console.log(res);
+        var sign = res.data.sign;
+        if (res.status) {
+          if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+              document.addEventListener(
+                "WeixinJSBridgeReady",
+                onBridgeReady,
+                false
+              );
+            } else if (document.attachEvent) {
+              document.attachEvent("WeixinJSBridgeReady", onBridgeReady);
+              document.attachEvent("onWeixinJSBridgeReady", onBridgeReady);
+            }
+          } else {
+            this.onBridgeReady(
+              sign.appId,
+              sign.timeStamp,
+              sign.nonceStr,
+              sign.package,
+              sign.paySign
+            );
+          }
+        }
+      });
+    },
+    getWxInfo() {
+      let data = { url: window.location.href.split("#")[0] };
+      postAjax(api.getWxInfo, data).then(res => {
+        this.wxConfig(
+          res.data.appId,
+          res.data.timestamp,
+          res.data.nonceStr,
+          res.data.signature
+        );
+      });
+    },
+    wxConfig(appId, ts, nonceStr, signature) {
+      wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: appId, // 必填，公众号的唯一标识
+        timestamp: ts, // 必填，生成签名的时间戳
+        nonceStr: nonceStr, // 必填，生成签名的随机串
+        signature: signature, // 必填，签名，见附录1
+        jsApiList: ["chooseWXPay"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+      });
+    },
+    onBridgeReady(appId, timeStamp, nonceStr, packages, paySign) {
+      var ts = timeStamp.toString();
+      wx.ready(function() {
+        WeixinJSBridge.invoke(
+          "getBrandWCPayRequest",
+          {
+            appId: appId, //公众号名称，由商户传入
+            timeStamp: ts, //时间戳，自1970年以来的秒数
+            nonceStr: nonceStr, //随机串
+            package: packages,
+            signType: "MD5", //微信签名方式：
+            paySign: paySign //微信签名
+          },
+          function(res) {
+            console.log(res);
+            if (res.err_msg == "get_brand_wcpay_request:ok") {
+              // 使用以上方式判断前端返回,微信团队郑重提示：
+              //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+
+            }
+          }
+        );
+      });
     }
   },
   components:{
@@ -106,7 +185,9 @@ export default {
 };
 </script>
 <style scoped="">
-
+body{
+  background-color: #FDFDFD;
+}
 
 li {
   list-style: none;
@@ -144,7 +225,7 @@ li {
 
 .title {
   margin-top: 0.5rem;
-  height: 0.4rem;
+  height: 1rem;
 }
 
 .status {
@@ -166,6 +247,7 @@ li {
   height: 1.95rem;
   background: rgba(249, 249, 249, 1);
   margin: 0 auto;
+  clear: both;
 }
 
 .num {
@@ -236,7 +318,7 @@ li {
 
 .orderList {
   width: 100%;
-  height: 5.16rem;
+  height: 6rem;
   padding-top: 0.3rem;
 }
 

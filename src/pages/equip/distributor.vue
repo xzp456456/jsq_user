@@ -3,41 +3,60 @@
     <div class="item">
       <list-text>
         <span slot="text">经销商名称</span>
-        <span>厦门XX公司</span>
+        <span>{{info.dealer_name}}</span>
       </list-text>
       <list-text>
         <span slot="text">联系电话</span>
+        <a :href="'tel:'+info.tel">
         <div class="pull-left phone">
           <img src="../../assets/img/phone.png">
         </div>
-        <div class="pull-left idnum">15585965896</div>
+        <div class="pull-left idnum">{{info.tel}}</div>
+        </a>
       </list-text>
       <list-text>
         <span slot="text">经销商编号</span>
-        <span>3555</span>
+        <span>{{info.uid}}</span>
       </list-text>
-      <list-text>
+      <!-- <list-text>
         <span slot="text">市运营中心信息</span>
         <span>NO</span>
-      </list-text>
+      </list-text> -->
       <list-text>
         <span slot="text">地址</span>
-        <span>厦门市集美区软件园三期</span>
+        <span>{{info.region}}{{info.dealer_address}}</span>
       </list-text>
-       <list-text>
+       <!-- <list-text>
         <span slot="text">客服电话</span>
         <div class="pull-left phone">
               <img src="../../assets/img/phone.png">
             </div>
             <div class="pull-left idnum">12365121511</div>
-      </list-text>
+      </list-text> -->
     </div>
   </div>
 </template>
 <script>
-import listText from "../../components/listText";
+import listText from "@/components/listText";
+import { postAjax } from "@/api/axios";
+import * as api from "@/api/api";
 export default {
-  name: "distributor",
+  data(){
+    return{
+      info:[]
+    }
+  },
+  created(){
+    this.getInfo()
+  },
+  methods:{
+    getInfo(){
+      postAjax(api.getInfo,{})
+      .then(res=>{
+        this.info = res.data;
+      })
+    }
+  },
   components: {
     "list-text": listText
   }

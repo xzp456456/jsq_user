@@ -14,7 +14,7 @@
         <div class="list">
           <div class="row">
             <div class="pull-left title">昵称</div>
-            <div class="pull-right text_right">{{user.username}}</div>
+            <div class="pull-right text_right">{{user.nickname}}</div>
           </div>
         </div>
         <div class="list">
@@ -26,7 +26,7 @@
         <div class="list">
           <div class="row">
             <div class="pull-left title">姓名</div>
-            <div class="pull-right text_right">李彬彬</div>
+            <div class="pull-right text_right">{{user.username}}</div>
           </div>
         </div>
         <div class="list">

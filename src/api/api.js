@@ -30,3 +30,19 @@ export const getDeviceModelList = 'user/device/getDeviceModelList'
 export const getRechargePacketList = 'user/recharge/getRechargePacketList'
 
 export const myOrderList = 'user/order/myOrderList'
+
+export const myOtherDeviceList = 'user/device/myOtherDeviceList';
+
+export const changeCurrnetDevice = 'user/device/changeCurrnetDevice'
+
+export const query = 'user/device/query'
+
+export const replaceFilter = 'user/device/replaceFilter'
+
+export const share = 'user/share/getList'
+
+export const getWxInfo = 'user/user/getWxInfo'
+
+export const  payOrder = 'user/recharge/payOrder'
+
+export const  bindDevice = 'user/share/bindDevice'

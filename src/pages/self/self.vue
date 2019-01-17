@@ -2,7 +2,7 @@
   <div>
     <main>
       <list leftName="设备ID">
-        <input type="text" v-model="equip.device_id" placeholder="请填写设备ID">
+        <input type="text" v-model="equip.device_id" disabled="disabled" placeholder="请填写设备ID">
       </list>
       <list leftName="设备地址">
         <input type="text" v-model="equip.device_name" placeholder="请填写设备别名">
@@ -22,7 +22,9 @@ export default {
       equip: {}
     };
   },
-
+  created(){
+    this.equip.device_id =localStorage.getItem('device_id');
+  },
   methods: {
     editDevice() {
       let data = {
@@ -56,5 +58,9 @@ export default {
 };
 </script>
 <style scoped="">
+input[type="text" i]:disabled{
+  background-color: transparent;
+}
+
 </style>
 

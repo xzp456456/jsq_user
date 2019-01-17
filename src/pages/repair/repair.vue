@@ -3,7 +3,7 @@
     <header></header>
     <main>
       <div class="repairInfo">
-        <router-link to="record">保修记录</router-link>
+        <router-link to="record">报修记录</router-link>
       </div>
       <div class="info_item">
         <div class="list">
@@ -82,7 +82,7 @@
         <p class="id">自动检查原因</p>
         <div class="itemProblem">
           <div class="pull-left list_p" v-for="(btn,index) in btnText" :key="index">
-            <button :class="{'active':index==tapIndex}" @click="tap(index)">{{btn}}</button>
+            <button :class="{'active':index == tapIndex}" @click="tap(index)">{{btn}}</button>
           </div>
         </div>
       </div>
@@ -121,7 +121,7 @@
 
       <v-btn @actionClick="repair">提交</v-btn>
       <div class="server">
-        <p>客服电话：0592 XXXXXXXX</p>
+        <p>客服电话：0592 4008877553</p>
       </div>
     </main>
     <mt-popup v-model="show" position="bottom">
@@ -165,7 +165,7 @@ export default {
       postFileUp(api.upload, data).then(res => {
         if (res.status) {
           console.log(res);
-          this.bg[el].url = "http://jsq.yxsoft.net" + res.data.list[0].url;
+          this.bg[el].url = "http://"+window.location.host + res.data.list[0].url;
           if (el == 0) {
             this.info.fault_location_file_id = res.data.list[0].file_id;
           }
@@ -216,6 +216,9 @@ export default {
             position: "center",
             duration: 1500
           });
+          setTimeout(()=>{
+            this.$router.push('/')
+          },1500)
         } else {
           this.Toast({
             message: res.msg,
@@ -328,7 +331,7 @@ export default {
 }
 
 .list_p button {
-  width: 2.8rem;
+  width: 2.5rem;
   height: 0.68rem;
   margin: 0 0.1rem;
   border-radius: 0rem;
@@ -339,10 +342,11 @@ export default {
   border-radius: 0.4rem;
   outline: none;
   border: none;
+  background-color: #DDDDDD;
 }
 
 .active {
-  background: rgba(26, 173, 255, 1);
+  background-color: rgba(26, 173, 255, 1) !important;
 }
 
 .problem {

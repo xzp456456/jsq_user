@@ -18,8 +18,9 @@
   </div>
 </template>
 <script>
-import {postAjax} from '../../api/axios';
-import * as api from '../../api/api';
+import {postAjax} from '@/api/axios';
+import * as api from '@/api/api';
+
 export default {
   data(){
     return{
@@ -28,6 +29,10 @@ export default {
   },
   created(){
     this.repairList();
+    
+  },
+  mounted(){
+    
   },
   methods:{
     repairList(){

@@ -12,9 +12,10 @@
   </div>
 </template>
 <script>
-import btn from "../../components/btn";
-import { postAjax } from "../../api/axios";
-import * as api from "../../api/api";
+import btn from "@/components/btn";
+import { postAjax } from "@/api/axios";
+import * as api from "@/api/api";
+
 export default {
   data() {
     return {
@@ -32,6 +33,22 @@ export default {
       };
       postAjax(api.add, data).then(res => {
         console.log(res);
+        if(res.status){
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
+          setTimeout(()=>{
+            this.$router.push('suggestion');
+          },1500)
+        }else{
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
+        }
       });
     },
     getInfo() {

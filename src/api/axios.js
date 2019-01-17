@@ -1,14 +1,32 @@
 import axios from 'axios'
 import qs from 'qs'
 import store from '../vuex/store'
-axios.defaults.baseURL = process.env.HTTP_URL;
+import jquery from 'jquery';
+import { Indicator } from 'mint-ui';
+//axios.defaults.baseURL = process.env.HTTP_URL;
 //axios.defaults.baseURL = '/api';
-axios.defaults.timeout = 2500;
+
+var GetDomainName = function () {//获取域名后缀
+    var url = window.location.host;
+    url = url.substring(url.lastIndexOf('.'));
+    return url;
+};
+
+if(GetDomainName()==".com"){
+    axios.defaults.baseURL = 'http://www.iyunmima.com'
+}else{
+    axios.defaults.baseURL = '/api'
+}
+
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 //axios.defaults.headers['is-wap'] = 1;
 
 axios.interceptors.request.use(
+    Indicator.open({
+        text: '加载中...',
+        spinnerType: 'fading-circle'
+      }),
     config => {
         if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
             config.headers.Authorization = `token ${store.state.token}`;
@@ -23,6 +41,7 @@ axios.interceptors.request.use(
 //http response 拦截器
 axios.interceptors.response.use(
     response => {
+          Indicator.close();
         return response;
     },
     error => {
@@ -39,7 +58,7 @@ axios.interceptors.response.use(
 
 export const getAjax = (url, param) => {
     return new Promise((resolve, reject) => {
-        axios.get(url, param).then((res) => {
+        axios.get(url, {params:param}).then((res) => {
             resolve(res.data);
         }).then((err) => {
             reject(err);
@@ -76,3 +95,5 @@ export const postFileUp = (url, param) => {
         })
     })
 }
+
+export const $ = jquery;

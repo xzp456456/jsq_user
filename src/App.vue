@@ -19,6 +19,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
+  background-color: #ffffff;
   padding: 0;
 }
 ::-webkit-scrollbar{

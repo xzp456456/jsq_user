@@ -92,8 +92,8 @@ export default {
         {
           flex: 1,
           values: [
-            { model_name: "商务I型（MS-3805W" },
-            { model_id: "家用II型（LANMAX-185）" }
+            { model_name: "商务I型(MS-3805W)" ,model_id:1},
+            { model_name: "家用II型(LANMAX-185)",model_id:2  }
           ],
           className: "slot4",
           textAlign: "center"
@@ -129,9 +129,13 @@ export default {
     //获取设备型号方法
     getDeviceModelList() {
       postAjax(api.getDeviceModelList, {}).then(res => {
-        if (res.status) {
-          this.slots2[0].values = res.data;
-        }
+        console.log(res);
+         // this.slots2[0].values = [{model_name:'请选择型号',model_id:""},...res.data];
+          let item = res.data;
+         let view = item.map((item)=>{
+            return item
+          })
+          this.slots2[0].values = view;
       });
     },
     changeId(picker, values) {
@@ -152,6 +156,9 @@ export default {
             position: "center",
             duration: 1500
           });
+          setTimeout(()=>{
+            this.$router.push('/');
+          },1500)
         } else {
           this.Toast({
             message: res.msg,
@@ -252,10 +259,14 @@ export default {
   font-size: 0.37rem;
   font-family: PingFang-SC-Medium;
   font-weight: 500;
-  color: rgba(202, 202, 202, 1);
+  /* color: rgba(202, 202, 202, 1); */
   line-height: 1.5rem;
   text-align: right;
   width: 100%;
+}
+
+input{
+  color: black !important;
 }
 
 .name_text {

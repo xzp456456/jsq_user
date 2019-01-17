@@ -7,16 +7,16 @@
             <div class="wilf pull-left">
               <img src="@/assets/img/sw.png">
             </div>
-            <div class="title pull-left">办公室</div>
+            <div class="title pull-left">{{info.device_name}}</div>
             <div class="openClose pull-right" @click="showClose(true)">
               <img src="@/assets/img/kg.png">
             </div>
           </div>
           <div class="gauge">
-            <div class="num">12105</div>
+            <div class="num">{{info.restFlow?info.restFlow:""}}</div>
             <div class="ml">剩余流量/L</div>
           </div>
-          <div class="numText">本次净水量 ：0.55L</div>
+          <div class="numText">本次净水量 ：{{info.thisFlow?info.thisFlow:0}}L</div>
         </div>
       </div>
     </header>
@@ -27,8 +27,8 @@
             <img src="@/assets/img/shui.png">
           </div>
           <div class="pull-left pd">
-            <p class="waterP">原水TDS</p>
-            <p class="waterp">100ppm</p>
+            <p class="waterP" >原水TDS</p>
+            <p class="waterp">{{info.rawTDS?info.rawTDS:0}}ppm</p>
           </div>
         </div>
         <div class="water_right">
@@ -37,20 +37,22 @@
           </div>
           <div class="pull-left pd">
             <p class="waterP">纯水TDS</p>
-            <p class="waterp">13ppm</p>
+            <p class="waterp">{{info.purityTDS?info.purityTDS:0}}ppm</p>
           </div>
         </div>
       </div>
       <div class="row_w">
-        <div class="lan pull-left">累计净水量
-          <span class="sp">145L</span>
+        <div class="lan pull-left">
+          累计净水量
+          <span class="sp">{{info.usedFlow?info.usedFlow:0}}L</span>
         </div>
-        <div class="lan pull-right">已守护时长
-          <span class="sp">551天</span>
+        <div class="lan pull-right">
+          已守护时长
+          <span class="sp">{{info.usedTime?info.usedTime:0}}天</span>
         </div>
       </div>
       <div class="item">
-        <div class="list" @click="navgateTo('equipment')">
+        <div class="list" @click="navgateTo('equipment')" >
           <div class="listImg">
             <img src="@/assets/img/1.png">
           </div>
@@ -68,7 +70,7 @@
           </div>
           <p>我的滤芯</p>
         </div>
-        <div class="list" @click="navgateTo('repair')">
+        <div class="list" @click="navgateTo('repair')" >
           <div class="listImg">
             <img src="@/assets/img/4.png">
           </div>
@@ -99,8 +101,13 @@ export default {
   data() {
     return {
       show: false,
-      urlApi: api
+      urlApi: api,
+      info: {}
     };
+  },
+  created() {
+    this.query();
+    
   },
   components: {
     "v-footer": footer
@@ -108,6 +115,21 @@ export default {
   methods: {
     showClose(bool) {
       this.show = bool;
+    },
+    query() {
+      let data = {};
+      postAjax(api.query, data).then(res => {
+        if (res.status == 10000) {
+          localStorage.setItem("url", window.location.href);
+          window.location.href = res.data.url;
+          
+        } else if (res.status == -99) {
+          this.$router.push("addEquipment");
+        } else {
+          this.info = res.data;
+         this.$route.meta.title = "设备ID:"+this.info.eId
+        }
+      });
     },
     closePunch(url) {
       postAjax(url, {}).then(res => {
@@ -130,7 +152,10 @@ export default {
     },
     navgateTo(url) {
       this.$router.push(url);
-    }
+    },
+    // test(){
+    //   location.href="http://www.iyunmima.com/view/users/share.html"
+    // }
   }
 };
 </script>
@@ -299,7 +324,7 @@ main .sp {
 
 main .item {
   padding-top: 0.8rem;
-  width: 80%;
+  width: 8rem;
   clear: both;
   height: 1.6rem;
   background: rgba(255, 255, 255, 1);
@@ -308,7 +333,7 @@ main .item {
 
 main .item .list {
   float: left;
-  margin: 0rem 0.35rem;
+  width: 2rem;
   text-align: center;
 }
 
@@ -317,6 +342,11 @@ main .item .listImg {
   height: 1rem;
   margin: 0 auto;
 }
+
+main .item .list p{
+  font-size:.16rem; 
+}
+
 main .item .listImg img {
   width: 100%;
 }

@@ -3,19 +3,19 @@
     <div class="erweima_bg">
       <div class="close">
         <div class="close_img">
-          <img src="../../assets/img/close.png">
+          <img src="@/assets/img/close.png">
         </div>
       </div>
       <div class="erweima_r">
         <div class="erweima">
-          <img src="../../assets/img/erweima.png">
+          <img src="@/assets/img/erweima.png">
         </div>
         <p>长按识别二维码，邀请好友</p>
       </div>
     </div>
     <header>
       <div class="banner">
-        <img src="../../assets/img/banner.png">
+        <img src="@/assets/img/banner.png">
       </div>
     </header>
     <main>
@@ -27,36 +27,144 @@
             <th>获得奖励</th>
             <th>日期</th>
           </tr>
-          <tr>
-            <td>ljik</td>
-            <td>99升</td>
-            <td>20181116</td>
-          </tr>
-          <tr>
-            <td>ljik</td>
-            <td>99升</td>
-            <td>20181116</td>
-          </tr>
-          <tr>
-            <td>ljik</td>
-            <td>99升</td>
-            <td>20181116</td>
+          <tr v-for="(list,index) in lists" :key="index">
+            <td>{{list.username}}</td>
+            <td>{{list.prom_reward}}升</td>
+            <td>{{list.create_time}}</td>
           </tr>
         </table>
       </div>
     </main>
     <footer>
       <div class="bottom">
-        <div class="pull-left wc">分享邀请</div>
-        <div class="pull-right wc addclass">面对面邀请</div>
+        <div class="pull-left wc" @click="showSh(true)">分享邀请</div>
+        <div class="pull-right wc addclass" @click="showQS(true)">面对面邀请</div>
       </div>
     </footer>
+      <div class="qs" v-show="show" @click="showQS(false)">
+        <div id="qrcode"></div>
+      </div>
+      <div class="qs" v-show="share" @click="showSh(false)">
+        <div>
+          <span class="textShare">邀请得流量</span>  
+          <span><img class="zb"  src="@/assets/img/15tc.png" alt=""></span>
+        </div>
+      </div>
   </div>
 </template>
 <script>
-export default {};
+import { postAjax } from "@/api/axios";
+import * as api from "@/api/api";
+import QRCode from "qrcodejs2";
+export default {
+  data() {
+    return {
+      show:false,
+      share:false,
+      data: {
+        page: 1,
+        page_size: 10
+      },
+      lists: []
+    };
+  },
+  created() {
+    this.shareAction();
+    this.wxReady();
+    
+  },
+  mounted() {
+    this.qrcode();
+    this.wxConfig();
+    this.getWxInfo();
+  },
+  methods: {
+    showQS(bool){
+      this.show = bool;
+    },
+    showSh(bool){
+      this.share = bool;
+    },
+    shareAction() {
+      let data = this.data;
+      postAjax(api.share, data).then(res => {
+        this.lists = res.data;
+      });
+    },
+    qrcode() {
+      let domWidth = document.body.clientWidth / 2;
+      let qrcode = new QRCode("qrcode", {
+        width: domWidth,
+        height: domWidth, // 高度
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        text: "http://www.iyunmima.com/view/users/index.html#/addEquipment"
+      });
+    },
+    getWxInfo(){
+      let data = {url:window.location.href.split('#')[0]}
+      postAjax(api.getWxInfo,data)
+      .then(res=>{
+        console.log(res);
+        this.wxConfig(res.data.appId,res.data.timestamp,res.data.nonceStr,res.data.signature);
+      })
+    },
+    wxConfig(appId,ts,nonceStr,signature){
+        wx.config({
+          debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+          appId: appId, // 必填，公众号的唯一标识
+          timestamp: ts, // 必填，生成签名的时间戳
+          nonceStr: nonceStr, // 必填，生成签名的随机串
+          signature: signature,// 必填，签名，见附录1
+          jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+      });
+    },
+    wxReady() {
+      wx.ready(function() {
+        wx.onMenuShareTimeline({
+          title: "物联网净水器",
+          link: "http://www.iyunmima.com/view/users/index.html#/addEquipment",
+          desc: "分享给您的好友吧",
+          imgUrl: "xxx",
+          success: function(res) {
+            console.log(res);
+          },
+          cancel: function(res) {},
+          fail: function(res) {}
+        });
+        wx.onMenuShareAppMessage({
+          title: "物联网净水器",
+          link: "http://www.iyunmima.com/view/users/index.html#/addEquipment",
+          desc: "分享给您的好友吧",
+          imgUrl: "xxx",
+          success: function(res) {
+            console.log(res);
+          },
+          cancel: function(res) {},
+          fail: function(res) {}
+        });
+      });
+    }
+  }
+};
 </script>
 <style scoped="">
+.textShare{
+  width: 100%;
+  color: #ffffff;
+  font-size: .666667rem;
+  text-align: center;
+  margin-left:30%; 
+  height: 3rem;
+  line-height: 3rem;
+}
+
+.zb{
+  width: 2.133333rem;
+  float:right;
+  margin-right: .8rem;
+}
+
 .banner {
   width: 100%;
   height: 2.89rem;
@@ -182,6 +290,23 @@ footer {
   font-weight: 500;
   color: rgba(177, 177, 177, 1);
   text-align: center;
+}
+
+.qs{
+  position:fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#qrcode {
+ position: absolute;
+	top: 50%;
+	left: 50%;
+  border: .266667rem solid #ffffff;
+	transform: translate(-50%, -50%);
+  
 }
 
 .close_img {

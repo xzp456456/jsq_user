@@ -6,59 +6,59 @@
           <div class="list">
             <div class="name">pp</div>
             <div class="nd">
-              <div class="jd"></div>
+              <div class="jd"  :style="{width:info.F1Flux?(info.F1Flux/info.F1FluxMax)*100+'%':'0%'}"></div>
             </div>
-            <div class="num">70%</div>
+            <div class="num">{{info.F1Flux?(info.F1Flux/info.F1FluxMax)*100+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">udf</div>
             <div class="nd">
-              <div class="jd"></div>
+              <div class="jd" :style="{width:info.F2Flux?(info.F2Flux/info.F2FluxMax)*100+'%':'0%'}"></div>
             </div>
-            <div class="num">70%</div>
+            <div class="num">{{info.F2Flux?(info.F2Flux/info.F2FluxMax)*100+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">ro</div>
             <div class="nd">
-              <div class="jd"></div>
+              <div class="jd" :style="{width:info.F3Flux?(info.F3Flux/info.F3FluxMax*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">70%</div>
+            <div class="num">{{info.F3Flux?(info.F3Flux/info.F3FluxMax*100)+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">t33</div>
             <div class="nd">
-              <div class="jd"></div>
+              <div class="jd" :style="{width:info.F4Flux?(info.F4Flux/info.F4FluxMax*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">70%</div>
+            <div class="num">{{info.F4Flux?(info.F4Flux/info.F4FluxMax*100)+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">pp</div>
             <div class="nd">
-              <div class="jd"></div>
+              <div class="jd" :style="{width:info.F5Flux?(info.F5Flux/info.F5FluxMax*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">70%</div>
+            <div class="num">{{info.F5Flux?(info.F5Flux/info.F5FluxMax*100)+'%':'0%'}}</div>
           </div>
         </div>
       </div>
     </header>
     <main>
-      <Btn  @actionClick="add">申请更换滤芯</Btn>
+      <Btn @actionClick="replaceFilter()">申请更换滤芯</Btn>
       <div class="text_title">滤芯</div>
       <div class="ddItem">
         <div class="ddList">
           <span>PP（5微米聚丙烯熔喷滤芯）</span>
         </div>
         <div class="ddList">
-          <span>PP（5微米聚丙烯熔喷滤芯）</span>
+          <span>UDF（颗粒果壳活性炭滤芯）</span>
         </div>
         <div class="ddList">
-          <span>PP（5微米聚丙烯熔喷滤芯）</span>
+          <span>PP（1微米聚丙烯熔喷滤芯）</span>
         </div>
         <div class="ddList">
-          <span>PP（5微米聚丙烯熔喷滤芯）</span>
+          <span>RO（反渗透滤芯)</span>
         </div>
         <div class="ddList">
-          <span>PP（5微米聚丙烯熔喷滤芯）</span>
+          <span>T33（颗粒椰壳活性炭滤芯）</span>
         </div>
       </div>
     </main>
@@ -67,16 +67,56 @@
 </template>
 
 <script>
-import Btn from "../../components/btn";
+import Btn from "@/components/btn";
+import * as api from "@/api/api";
+import { getAjax, postAjax } from "@/api/axios";
 export default {
   name: "Element",
+  data(){
+    return{
+      info:{}
+    }
+  },
+  created(){
+    this.query()
+  },
+  methods:{
+      query(){
+      let data = {}
+      postAjax(api.query,data)
+      .then(res=>{
+        
+        this.info = res.data
+      })
+    },
+    replaceFilter(){
+      let data ={
+          f1_flux:this.info.F1Flux,
+          f2_flux:this.info.F2Flux,
+          f3_flux:this.info.F3Flux,
+          f4_flux:this.info.F4Flux,
+          f5_flux:this.info.F5Flux,
+          f1_flux_max:this.info.F1FluxMax,
+          f2_flux_max:this.info.F2FluxMax,
+          f3_flux_max:this.info.F3FluxMax,
+          f4_flux_max:this.info.F4FluxMax,
+          f5_flux_max:this.info.F5FluxMax
+      }
+      postAjax(api.replaceFilter,data)
+      .then(res=>{
+          this.Toast({
+            message: res.msg,
+            position: "center",
+            duration: 1500
+          });
+          setTimeout(()=>{
+            this.$router.push('/');
+          },1500)
+      })
+    },
+  },
   components: {
     Btn
-  },
-  methods: {
-    add() {
-      console.log(1);
-    }
   }
 };
 </script>
