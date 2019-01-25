@@ -56,6 +56,7 @@
 import { postAjax } from "@/api/axios";
 import * as api from "@/api/api";
 import QRCode from "qrcodejs2";
+
 export default {
   data() {
     return {
@@ -70,13 +71,13 @@ export default {
   },
   created() {
     this.shareAction();
-    this.wxReady();
-    
+
   },
   mounted() {
     this.qrcode();
     this.wxConfig();
     this.getWxInfo();
+    this.wxReady();
   },
   methods: {
     showQS(bool){
@@ -92,13 +93,14 @@ export default {
       });
     },
     qrcode() {
+      let url = 'http://www.iyunmima.com/view/users/index.html?share={"share_uid":"'+localStorage.getItem('uid')+'","share_device_id":"'+localStorage.getItem('device_id')+'"}#/addEquipment';
       let domWidth = document.body.clientWidth / 2;
       let qrcode = new QRCode("qrcode", {
         width: domWidth,
         height: domWidth, // 高度
         colorDark: "#000000",
         colorLight: "#ffffff",
-        text: "http://www.iyunmima.com/view/users/index.html#/addEquipment"
+        text:url
       });
     },
     getWxInfo(){
@@ -122,10 +124,10 @@ export default {
     wxReady() {
       wx.ready(function() {
         wx.onMenuShareTimeline({
-          title: "物联网净水器",
-          link: "http://www.iyunmima.com/view/users/index.html#/addEquipment",
-          desc: "分享给您的好友吧",
-          imgUrl: "xxx",
+          title: "云密码物联网平台",
+          link:'http://www.iyunmima.com/view/users/index.html?share_uid='+localStorage.getItem('uid')+'&share_device_id='+localStorage.getItem('device_id')+'#/addEquipment',
+          desc: "你的好友给你分享了一台设备",
+          imgUrl: 'http://www.iyunmima.com/view/users/static/img/logos.png',
           success: function(res) {
             console.log(res);
           },
@@ -133,10 +135,10 @@ export default {
           fail: function(res) {}
         });
         wx.onMenuShareAppMessage({
-          title: "物联网净水器",
-          link: "http://www.iyunmima.com/view/users/index.html#/addEquipment",
-          desc: "分享给您的好友吧",
-          imgUrl: "xxx",
+          title: "云密码物联网平台",
+          link:'http://www.iyunmima.com/view/users/index.html?share_uid='+localStorage.getItem('uid')+'&share_device_id='+localStorage.getItem('device_id')+'#/addEquipment',
+          desc: "你的好友给你分享了一台设备",
+          imgUrl: 'http://www.iyunmima.com/view/users/static/img/logos.png',
           success: function(res) {
             console.log(res);
           },

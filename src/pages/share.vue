@@ -11,8 +11,11 @@ export default {
     };
   },
   created() {
-    this.device_id = this.getQueryString("device_id");
     this.bindDevice();
+  },
+  mounted(){
+   
+    
   },
   methods: {
     getQueryString(name) {
@@ -22,9 +25,10 @@ export default {
       return null;
     },
     bindDevice() {
+       this.device_id = this.getQueryString("device_id");
       let data = { device_id: this.device_id };
       postAjax(api.bindDevice, data).then(res => {
-        if (res.status) {
+        if (res.status==1) {
           this.$router.push("/");
         }
       });

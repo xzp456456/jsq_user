@@ -3,7 +3,7 @@
     <header></header>
     <main>
       <div class="item">
-        <p class="pds">已连接设备</p>
+        <!-- <p class="pds">已连接设备</p> -->
         <div class="list"  @click="navgateTo('/')">
           <div class="list_top">
             <div class="main_img pull-left">
@@ -27,8 +27,8 @@
               <span class="state">{{info.eStateDesc}}</span>
             </div>
             <div class="pull-right stateRight">
-              <span>原水：{{info.rawTDS?list.rawTDS:0}}PPM</span>
-              <span>净水：{{info.purityTDS?list.purityTDS:0}}PPM</span>
+              <span>原水：{{info.rawTDS?info.rawTDS:0}}PPM</span>
+              <span>净水：{{info.purityTDS?info.purityTDS:0}}PPM</span>
             </div>
           </div>
           <div class="status">
@@ -61,12 +61,12 @@
               <button @click.stop="navgateTo('recharge')">我要充值</button>
             </div>
             <div class="pull-right">
-              <div class="changeImg pull-left">
+              <!-- <div class="changeImg pull-left">
                 <img src="@/assets/img/wf.png">
               </div>
               <div class="changeImg pull-left" @click.stop="controller(true)">
                 <img src="@/assets/img/kgq.png">
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -110,12 +110,10 @@ export default {
     }
   },
   created(){
-    this.myOtherDeviceList();
-    this.query()
+    
   },
   mounted(){
-      
-
+      this.query()
   },
   components:{
     'v-btn':btn
@@ -184,6 +182,7 @@ export default {
     navgateQuery(url,id){
       this.$router.push(url);
       localStorage.setItem('device_id',id);
+      localStorage.setItem('equipment',2);
     },
     qrcode() {
       let domWidth = document.body.clientWidth / 2;

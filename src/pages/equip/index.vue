@@ -15,6 +15,7 @@
           <div class="gauge">
             <div class="num">{{info.restFlow?info.restFlow:""}}</div>
             <div class="ml">剩余流量/L</div>
+            <div class="ml" style="font-size:0.2rem">状态:{{info.eStateDesc}}</div>
           </div>
           <div class="numText">本次净水量 ：{{info.thisFlow?info.thisFlow:0}}L</div>
         </div>
@@ -78,6 +79,7 @@
         </div>
       </div>
     </main>
+    <div class="logos"><img src="@/assets/img/logi.png" alt=""></div>
     <v-footer></v-footer>
     <mt-popup v-model="show" position="bottom">
       <div class="coll">
@@ -127,7 +129,9 @@ export default {
           this.$router.push("addEquipment");
         } else {
           this.info = res.data;
+          document.title = "设备ID:"+this.info.eId;
          this.$route.meta.title = "设备ID:"+this.info.eId
+         localStorage.setItem('device_id',res.data.eId);
         }
       });
     },
@@ -140,6 +144,7 @@ export default {
             position: "center",
             duration: 1500
           });
+          this.query();
         } else {
           this.Toast({
             message: res.msg,
@@ -152,10 +157,7 @@ export default {
     },
     navgateTo(url) {
       this.$router.push(url);
-    },
-    // test(){
-    //   location.href="http://www.iyunmima.com/view/users/share.html"
-    // }
+    }
   }
 };
 </script>
@@ -224,6 +226,18 @@ header .num {
   font-weight: bold;
   color: rgba(255, 255, 255, 1);
   padding-top: 1.1rem;
+}
+
+.logos{
+  width: 1.666667rem;
+  height: .733333rem;
+  margin: 0 auto;
+  margin-top: 1rem;
+}
+
+.logos img{
+  width: 100%;
+  height: 100%;
 }
 
 header .ml {
@@ -324,7 +338,7 @@ main .sp {
 
 main .item {
   padding-top: 0.8rem;
-  width: 8rem;
+  width: 10rem;
   clear: both;
   height: 1.6rem;
   background: rgba(255, 255, 255, 1);
@@ -333,7 +347,7 @@ main .item {
 
 main .item .list {
   float: left;
-  width: 2rem;
+  width: 2.5rem;
   text-align: center;
 }
 
@@ -344,7 +358,7 @@ main .item .listImg {
 }
 
 main .item .list p{
-  font-size:.16rem; 
+  font-size:.34rem; 
 }
 
 main .item .listImg img {

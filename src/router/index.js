@@ -20,6 +20,7 @@ import wd from '@/pages/self/wd'
 import code from '@/pages/code'
 import manage from '@/pages/equip/manage'
 import share from '@/pages/share'
+import { resolve } from 'path';
 Vue.use(Router)
 
 export default new Router({
@@ -27,17 +28,17 @@ export default new Router({
     {
       path:'/share',
       name:'share',
-      component:share
+      component:resolve=>require(['@/pages/share'],resolve)
     },
     {
       path:'/manage',
       name:'manage',
-      component:manage
+      component:resolve=>require(['@/pages/equip/manage'],resolve)
     },
     {
       path:'/code',
       name:'code',
-      component:code,
+      component:resolve=>require(['@/pages/code'],resolve),
       meta:{
         title:'授权'
       }
@@ -45,7 +46,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: index,
+      component: resolve=>require(['@/pages/equip/index'],resolve),
       meta:{
         title:'设备'
       }
@@ -53,7 +54,7 @@ export default new Router({
     {
       path: '/addEquipment',
       name: 'addEquipment',
-      component: addEquipment,
+      component: resolve=>require(['@/pages/equip/addEquipment'],resolve),
       meta:{
         title:'添加设备'
       }
@@ -61,7 +62,7 @@ export default new Router({
     {
       path: '/distributor',
       name: 'distributor',
-      component: distributor,
+      component: resolve=>require(['@/pages/equip/distributor'],resolve),
       meta:{
         title:'经销商信息'
       }
@@ -69,7 +70,7 @@ export default new Router({
     {
       path: '/element',
       name: 'element',
-      component: Element,
+      component: resolve=>require(['@/pages/order/Element'],resolve),
       meta:{
         title:'我的滤芯'
       }
@@ -77,7 +78,7 @@ export default new Router({
     {
       path: '/equipment',
       name: 'equipment',
-      component: equipment,
+      component: resolve=>require(['@/pages/equip/equipment'],resolve),
       meta:{
         title:'我的设备'
       }
@@ -85,7 +86,7 @@ export default new Router({
     {
       path: '/feedback',
       name: 'feedback',
-      component: feedback,
+      component: resolve=>require(['@/pages/self/feedback'],resolve),
       meta:{
         title:'意见反馈'
       }
@@ -93,7 +94,7 @@ export default new Router({
     {
       path: '/myInfo',
       name: 'myInfo',
-      component: myInfo,
+      component: resolve=>require(['@/pages/self/myInfo'],resolve),
       meta:{
         title:'个人信息'
       }
@@ -101,7 +102,7 @@ export default new Router({
     {
       path: '/order',
       name: 'order',
-      component: order,
+      component: resolve=>require(['@/pages/order/order'],resolve),
       meta:{
         title:'我的订单'
       }
@@ -109,7 +110,7 @@ export default new Router({
     {
       path: '/recharge',
       name: 'recharge',
-      component: recharge,
+      component: resolve=>require(['@/pages/order/recharge'],resolve),
       meta:{
         title:'我要充值'
       }
@@ -117,7 +118,7 @@ export default new Router({
     {
       path: '/record',
       name: 'record',
-      component: record,
+      component: resolve=>require(['@/pages/equip/record'],resolve),
       meta:{
         title:'意见反馈'
       }
@@ -125,7 +126,7 @@ export default new Router({
     {
       path: '/repair',
       name: 'repair',
-      component: repair,
+      component: resolve=>require(['@/pages/repair/repair'],resolve),
       meta:{
         title:'设备报修'
       }
@@ -133,12 +134,12 @@ export default new Router({
     {
       path: '/roll',
       name: 'roll',
-      component: roll
+      component: resolve=>require(['@/pages/repair/roll'],resolve)
     },
     {
       path: '/self',
       name: 'self',
-      component: self,
+      component: resolve=>require(['@/pages/self/self'],resolve),
       meta:{
         title:'我的设备'
       }
@@ -146,7 +147,7 @@ export default new Router({
     {
       path: '/shareGift',
       name: 'shareGift',
-      component: shareGift,
+      component: resolve=>require(['@/pages/self/shareGift'],resolve),
       meta:{
         title:'我的推广'
       }
@@ -154,7 +155,7 @@ export default new Router({
     {
       path: '/suggestion',
       name: 'suggestion',
-      component: suggestion,
+      component: resolve=>require(['@/pages/self/suggestion'],resolve),
       meta:{
         title:'意见反馈'
       }
@@ -162,7 +163,7 @@ export default new Router({
     {
       path: '/Waterrecords',
       name: 'Waterrecords',
-      component: Waterrecords,
+      component: resolve=>require(['@/pages/repair/Waterrecords'],resolve),
       meta:{
         title:'用水记录'
       }
@@ -170,9 +171,33 @@ export default new Router({
     {
       path: '/wd',
       name: 'wd',
-      component: wd,
+      component: resolve=>require(['@/pages/self/wd'],resolve),
       meta:{
         title:'我的'
+      }
+    },
+    {
+      path: '/qualification',
+      name: 'qualification',
+      component: resolve=>require(['@/pages/menu/qualification'],resolve),
+      meta:{
+        title:'云密码互联网平台'
+      }
+    },
+    {
+      path: '/helpDevice',
+      name: 'helpDevice',
+      component: resolve=>require(['@/pages/menu/helpDevice'],resolve),
+      meta:{
+        title:'设备代充'
+      }
+    },
+    {
+      path:'/helpDel',
+      name: 'helpDel',
+      component: resolve=>require(['@/pages/menu/helpDel'],resolve),
+      meta:{
+        title:'设备代充'
       }
     }
   ]

@@ -92,7 +92,7 @@
           <div class="file_all">
             <div
               class="imgFile"
-              :style="{background:'url('+bg[0].url+')no-repeat center',backgroundSize: '100%'}"
+              :style="{background:'url('+bg[0].url+')no-repeat','background-size':'100% 100%'}"
             >
               <input type="file" class="tranform" @change="getFileUp($event,0)">
             </div>
@@ -101,7 +101,7 @@
           <div class="file_all">
             <div
               class="imgFile"
-              :style="{background:'url('+bg[1].url+')no-repeat center',backgroundSize: '100%'}"
+              :style="{background:'url('+bg[1].url+')no-repeat','background-size': '100% 100%'}"
             >
               <input type="file" class="tranform" @change="getFileUp($event,1)">
             </div>
@@ -110,7 +110,7 @@
           <div class="file_all">
             <div
               class="imgFile"
-              :style="{background:'url('+bg[2].url+')no-repeat center',backgroundSize: '100%'}"
+              :style="{background:'url('+bg[2].url+')no-repeat','background-size':'100% 100%'}"
             >
               <input type="file" @change="getFileUp($event,2)" class="tranform">
             </div>
@@ -121,7 +121,7 @@
 
       <v-btn @actionClick="repair">提交</v-btn>
       <div class="server">
-        <p>客服电话：0592 4008877553</p>
+        <p>客服电话：4008877553</p>
       </div>
     </main>
     <mt-popup v-model="show" position="bottom">
@@ -156,6 +156,9 @@ export default {
       ],
       btnText: ["APP报设备漏水", "净水器不制水", "设备信号差"]
     };
+  },
+  created(){
+    this.info.auto_detect_reason=1;
   },
   methods: {
     getFileUp(e, el) {
@@ -405,7 +408,7 @@ export default {
   height: 1.64rem;
   background: rgba(241, 241, 241, 1);
   background: url(../../assets/img/img.png) no-repeat;
-  background-size: 100%;
+  background-size: 100% !important;
 }
 
 .server {

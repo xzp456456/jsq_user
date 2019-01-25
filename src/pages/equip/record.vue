@@ -29,7 +29,7 @@ export default {
   },
   created(){
     this.repairList();
-    
+    this.$route.meta.title="设备ID:"+localStorage.getItem('device_id');
   },
   mounted(){
     

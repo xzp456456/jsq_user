@@ -5,9 +5,10 @@ import App from './App'
 import router from './router'
 import store from './vuex/store';
 import 'mint-ui/lib/style.css';
-
+import layer from 'layer-mobile'
 import { Picker,Popup,Toast,InfiniteScroll,Loadmore } from 'mint-ui';
 Vue.prototype.Toast = Toast;
+Vue.prototype.layer = layer;
 Vue.component(Picker.name,Picker);
 Vue.component(Popup.name, Popup);
 Vue.component(Loadmore.name, Loadmore);

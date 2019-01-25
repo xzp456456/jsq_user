@@ -21,11 +21,23 @@
         </div>
         <list-input>
           <span slot="text">经销商ID</span>
-          <input type="text" slot="input" v-model="add.dealer_id" placeholder="请填写经销商ID">
+          <input
+            type="text"
+            slot="input"
+            v-model="add.dealer_id"
+            @input="getIdDevice()"
+            placeholder="请填写经销商ID"
+          >
         </list-input>
         <list-input>
           <span slot="text">经销商名称</span>
-          <input type="text" slot="input" placeholder="请填写经销名称">
+          <input
+            type="text"
+            slot="input"
+            placeholder="请填写经销名称"
+            disabled="disabled"
+            :value="add.devices"
+          >
         </list-input>
         <list-input>
           <span slot="text">客户姓名</span>
@@ -48,7 +60,7 @@
           <div class="row">
             <div class="name pull-left">省市区</div>
             <div class="pull-right name_text">
-              <span class="text">{{add.province}}-{{add.city}}-{{add.area}}</span>
+              <span class="text">{{add.province}}{{add.city}}{{add.area}}</span>
               <img src="@/assets/img/in.png">
             </div>
           </div>
@@ -61,7 +73,7 @@
       <v-btn @actionClick="addDevice()">提交</v-btn>
     </main>
     <mt-popup v-model="show" position="bottom">
-      <mt-picker :slots="slots" @change="onValuesChange" :showToolbar="false" :value-key="'name'">
+      <mt-picker :slots="slots" @change="onValuesChange" :showToolbar="false" :value-key="'name'" >
         <a class="usi-btn-cancel">取消</a>
         <a class="usi-btn-sure" @click="showAcction(false)">确定</a>
       </mt-picker>
@@ -76,14 +88,15 @@
 import Picker from "@/components/Picker";
 import listInput from "@/components/listInput";
 import btn from "@/components/btn";
-import { postAjax } from "@/api/axios";
+import { postAjax, postJquery } from "@/api/axios";
 import * as api from "@/api/api";
 const address = require("../../../static/json/address.json");
-
+import { Indicator } from 'mint-ui';
 export default {
   name: "addEquipment",
   data() {
     return {
+      dealer_id: "",
       value: "",
       add: {},
       show: false,
@@ -92,8 +105,8 @@ export default {
         {
           flex: 1,
           values: [
-            { model_name: "商务I型(MS-3805W)" ,model_id:1},
-            { model_name: "家用II型(LANMAX-185)",model_id:2  }
+            { model_name: "商务I型(MS-3805W)", model_id: 1 },
+            { model_name: "家用II型(LANMAX-185)", model_id: 2 }
           ],
           className: "slot4",
           textAlign: "center"
@@ -102,19 +115,19 @@ export default {
       slots: [
         {
           flex: 1,
-          values: [{ name: "北京", id: "110000" }],
+          values: [],
           className: "slot1",
           textAlign: "left"
         },
         {
           flex: 1,
-          values: [{ name: "北京市", id: "110100" }],
+          values: [],
           className: "slot2",
           textAlign: "center"
         },
         {
           flex: 1,
-          values: [{ name: "东城区", id: "110100" }],
+          values: [],
           className: "slot3",
           textAlign: "right"
         }
@@ -123,19 +136,54 @@ export default {
   },
   created() {
     this.province();
+    
+  },
+  mounted() {
+    this.getParam();
     this.getDeviceModelList();
   },
   methods: {
+    getParam() {
+      let param = this.getQueryString("share");
+      console.log(param);
+      if (param == null) {
+        this.add.share_device_id = this.getQueryString("share_device_id");
+        this.add.share_uid = this.getQueryString("share_uid");
+      } else {
+        let jsonParam = JSON.parse(param);
+        this.add.share_uid = jsonParam.share_uid;
+        this.add.share_device_id = jsonParam.share_device_id;
+      }
+    },
+    getIdDevice() {
+      console.log(this.add.dealer_id);
+      let data = { dealer_id: this.add.dealer_id };
+      postAjax(api.deviceInfo, data)
+        .then(res => {
+          //this.add.devices = res.data.name;
+          this.$set(this.add, "devices", res.data.name);
+        })
+        .catch(res => {
+          this.$set(this.add, "devices", "");
+        });
+    },
+    getQueryString(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
+    },
     //获取设备型号方法
     getDeviceModelList() {
       postAjax(api.getDeviceModelList, {}).then(res => {
         console.log(res);
-         // this.slots2[0].values = [{model_name:'请选择型号',model_id:""},...res.data];
-          let item = res.data;
-         let view = item.map((item)=>{
-            return item
-          })
-          this.slots2[0].values = view;
+        // this.slots2[0].values = [{model_name:'请选择型号',model_id:""},...res.data];
+        let item = res.data;
+        let view = item.map(item => {
+          return item;
+        });
+        view.unshift({model_name:'请选择型号',model_id:0});
+        this.slots2[0].values = view;
       });
     },
     changeId(picker, values) {
@@ -149,22 +197,34 @@ export default {
       this.show2 = bool;
     },
     addDevice() {
+      Indicator.open({
+        text: '加载中...',
+        spinnerType: 'fading-circle'
+      });
       postAjax(api.addDevice, this.add).then(res => {
+        
+        if (res.status == 10000) {
+          localStorage.setItem("url", window.location.href);
+          window.location.href = res.data.url;
+          return;
+        }
         if (res.status) {
           this.Toast({
             message: res.msg,
             position: "center",
             duration: 1500
           });
-          setTimeout(()=>{
-            this.$router.push('/');
-          },1500)
+          setTimeout(() => {
+            this.$router.push("/");
+          }, 1500);
+          Indicator.close();
         } else {
           this.Toast({
             message: res.msg,
             position: "center",
             duration: 1500
           });
+          Indicator.close();
         }
       });
     },
@@ -173,6 +233,7 @@ export default {
       let prolist = province.map(item => {
         return { name: item.province, id: item.provinceid };
       });
+      prolist.unshift({name: '请选择', id: ""});
       this.slots[0].values = prolist;
     },
     cities(province) {
@@ -189,6 +250,7 @@ export default {
         let citlist = cities.map(item => {
           return { name: item.city, id: item.cityid };
         });
+       // citlist.unshift({name: '', id: ""});
         resolve(citlist);
       });
     },
@@ -211,6 +273,7 @@ export default {
         let arealist = area.map(item => {
           return { name: item.area, id: item.areaid };
         });
+      //  arealist.unshift({name: '', id: ""});
         resolve(arealist);
       });
     },
@@ -236,7 +299,8 @@ export default {
   components: {
     "list-input": listInput,
     "v-btn": btn
-  }
+  },
+  watch: {}
 };
 </script>
 
@@ -260,12 +324,11 @@ export default {
   font-family: PingFang-SC-Medium;
   font-weight: 500;
   /* color: rgba(202, 202, 202, 1); */
-  line-height: 1.5rem;
   text-align: right;
   width: 100%;
 }
 
-input{
+input {
   color: black !important;
 }
 
@@ -304,6 +367,7 @@ input{
   width: 100%;
   height: 1.5rem;
   border-bottom: 1px solid #e6e6e6;
+  line-height: 1.5rem;
 }
 
 .btn {
@@ -363,5 +427,8 @@ input{
   line-height: 40px;
   font-size: 15px;
   color: blueviolet;
+}
+input[type="text" i]:disabled {
+  background-color: transparent;
 }
 </style>

@@ -24,7 +24,7 @@
       </list-text> -->
       <list-text>
         <span slot="text">地址</span>
-        <span>{{info.region}}{{info.dealer_address}}</span>
+        <span>{{info.dealer_address}}</span>
       </list-text>
        <!-- <list-text>
         <span slot="text">客服电话</span>

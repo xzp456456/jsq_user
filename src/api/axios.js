@@ -1,8 +1,9 @@
 import axios from 'axios'
 import qs from 'qs'
 import store from '../vuex/store'
-import jquery from 'jquery';
+import $ from 'jquery';
 import { Indicator } from 'mint-ui';
+import router from '../router/index'
 //axios.defaults.baseURL = process.env.HTTP_URL;
 //axios.defaults.baseURL = '/api';
 
@@ -41,7 +42,7 @@ axios.interceptors.request.use(
 //http response 拦截器
 axios.interceptors.response.use(
     response => {
-          Indicator.close();
+        Indicator.close();
         return response;
     },
     error => {
@@ -74,6 +75,11 @@ export const postAjax = (url, param) => {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then((res) => {
+            
+            if(res.data.status==10000){
+                localStorage.setItem('url',window.location.href);
+                window.location.href = res.data.data.url;
+            }
             resolve(res.data);
         }).then((err) => {
             reject(err);
@@ -96,4 +102,22 @@ export const postFileUp = (url, param) => {
     })
 }
 
-export const $ = jquery;
+export const postJquery = (url, param) => {
+    param.openid = 123456;
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type:'post',
+            async:false,
+            url:axios.defaults.baseURL+'/'+url,
+            data:param,
+            dataType:'json',
+            success:function(data){
+                resolve(data)
+            },
+            error:function(err){
+                reject(err);
+            }
+        })
+    })
+
+}

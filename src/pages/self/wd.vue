@@ -30,25 +30,25 @@
           </div>
         </div>
         <div class="payAll">
-          <div class="paylist" @click="navgateQuery('order',0)">
+          <div class="paylist" @click="navgateQuery('order',0,0)">
             <div class="pay">
               <img src="../../assets/img/s1.png">
             </div>
             <div class="ptext">未支付</div>
           </div>
-          <div class="paylist" @click="navgateQuery('order',1)">
+          <div class="paylist" @click="navgateQuery('order',1,1)">
             <div class="pay">
               <img src="../../assets/img/s3.png">
             </div>
             <div class="ptext">已支付</div>
           </div>
-          <div class="paylist" @click="navgateQuery('order',2)">
+          <div class="paylist" @click="navgateQuery('order',2,3)">
             <div class="pay">
               <img src="../../assets/img/s2.png">
             </div>
             <div class="ptext">已发货</div>
           </div>
-          <div class="paylist" @click="navgateQuery('order',3)">
+          <div class="paylist" @click="navgateQuery('order',3,2)">
             <div class="pay">
               <img src="../../assets/img/s4.png">
             </div>
@@ -136,15 +136,18 @@ export default {
       postAjax(api.getInfo, {}).then(res => {
         if (res.status) {
           this.user = res.data;
+          localStorage.setItem('uid',res.data.uid)
+          localStorage.setItem('dealer_id',res.data.dealer_id)
         }
       });
     },
     navgateTo(url,id) {
       this.$router.push(url);
     },
-    navgateQuery(url,id){
+    navgateQuery(url,id,id2){
       this.$router.push(url);
-      localStorage.setItem('tab',id)
+      localStorage.setItem('tab',id);
+      localStorage.setItem('id2',id2)
     }
     
   },

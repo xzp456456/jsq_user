@@ -20,11 +20,11 @@
           </div>
           <div class="list_state">
             <div class="stateLeft pull-left">状态：
-              <span class="state">{{0}}</span>
+              <span class="state">{{info.eStateDesc}}</span>
             </div>
             <div class="pull-right stateRight">
-              <span>原水：{{info.rawTDS?list.rawTDS:0}}PPM</span>
-              <span>净水：{{info.purityTDS?list.purityTDS:0}}PPM</span>
+              <span>原水：{{info.rawTDS?info.rawTDS:0}}PPM</span>
+              <span>净水：{{info.purityTDS?info.purityTDS:0}}PPM</span>
             </div>
           </div>
           <div class="status">
@@ -164,7 +164,6 @@ export default {
     }
   },
   created(){
-    
     this.myOtherDeviceList();
     this.query()
   },
@@ -216,8 +215,8 @@ export default {
             position: "center",
             duration: 1500
           })
+          this.query();
           this.myOtherDeviceList();
-          this.query()
         }else{
           this.Toast({
             message: res.msg,
@@ -233,6 +232,7 @@ export default {
     navgateQuery(url,id){
       this.$router.push(url);
       localStorage.setItem('device_id',id);
+      localStorage.setItem('equipment',1);
     },
     controller(bool){
       this.show = bool;

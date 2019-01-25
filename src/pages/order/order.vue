@@ -2,20 +2,26 @@
   <div>
     <div class="nav">
       <ul>
-        <li v-for="(nav,index) in navs" :key="index" :class="{active:index==tabIndex}"  @click="navTab(index)">{{nav}}</li>
+        <li v-for="(nav,index) in navs" :key="index" :class="{active:index==tabIndex}"  @click="navTab(index,nav.id)">{{nav.name}}</li>
       </ul>
     </div>
     <div>
    
-  <div class="orderItem">
+  <div class="orderItem"
+      v-infinite-scroll="loadMore"
+      infinite-scroll-disabled="loading"
+      infinite-scroll-distance="0">
     <div class="orderList" v-for="(list,index) in lists" :key="index">
       <div class="row">
         <div class="title">
           <div class="orderId pull-left">订单时间：{{list.create_time}}</div>
           <div class="status pull-right" v-if="list.status==0">未支付</div>
-          <div class="status pull-right" v-if="list.status==1">已支付</div>
-          <div class="status pull-right" v-if="list.status==2">已完成</div>
+          <div class="status pull-right" v-if="list.status==4||list.status==1">已支付</div>
           <div class="status pull-right" v-if="list.status==3">已发货</div>
+          <div class="status pull-right" v-if="list.status==2">已完成</div>
+          <div class="status pull-right" v-if="list.status==-1">未通过</div>
+          <!-- <div class="status pull-right" v-if="list.status==1&list.obj_type=='filter'">已完成</div>
+           <div class="status pull-right" v-if="list.status==1&list.obj_type=='repair'">已完成</div> -->
         </div>
         <div class="numInfo">
           <div class="num">
@@ -67,7 +73,7 @@ import Vmore from '@/components/Loadmore'
 export default {
   data(){
     return{
-      navs:['全部','未支付','已支付','已发货','已完成'],
+      navs:[{name:'全部',id:""},{name:'未支付',id:0},{name:'已支付',id:1},{name:'已发货',id:3},{name:'已完成',id:2}],
       lists:[],
       tabIndex:0,
       order:{page_size:0,page:1},
@@ -77,7 +83,7 @@ export default {
   created(){
     this.getWxInfo();
      this.tabIndex = parseInt(localStorage.getItem('tab'))+1;
-     this.order.status = parseInt(localStorage.getItem('tab'));
+     this.order.status = parseInt(localStorage.getItem('id2'));
     this.getOrder();
   },
   methods:{
@@ -90,15 +96,12 @@ export default {
         }
       })
     },
-    navTab(index){
+    navTab(index,id){
       this.tabIndex = index;
-      this.order.status = index-1;
-      if(this.order.status<0){
-        this.order.status = "";
-      }
+      this.order.status = id;
       this.getOrder(); 
     },
-    Loadmore(){
+    loadMore(){
      this.order.page_size = this.order.page_size+10;
       this.getOrder(); 
     },
@@ -155,6 +158,7 @@ export default {
       });
     },
     onBridgeReady(appId, timeStamp, nonceStr, packages, paySign) {
+      var that = this;
       var ts = timeStamp.toString();
       wx.ready(function() {
         WeixinJSBridge.invoke(
@@ -169,7 +173,9 @@ export default {
           },
           function(res) {
             console.log(res);
+            that.navTab(1,0);
             if (res.err_msg == "get_brand_wcpay_request:ok") {
+              that.navTab(1,0);
               // 使用以上方式判断前端返回,微信团队郑重提示：
               //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
 
@@ -178,9 +184,6 @@ export default {
         );
       });
     }
-  },
-  components:{
-    'v-more':Vmore
   }
 };
 </script>

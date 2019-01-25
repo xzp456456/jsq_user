@@ -34,7 +34,7 @@ export default {
     return {
       lists: [],
       tab: 0,
-      packet_id: 1
+      packet_id: ""
     };
   },
   created() {
@@ -52,6 +52,7 @@ export default {
         if (res.status) {
           console.log(res);
           this.lists = res.data;
+          this.packet_id = res.data[0].packet_id
         }
       });
     },

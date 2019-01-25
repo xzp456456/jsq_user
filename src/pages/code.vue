@@ -5,9 +5,11 @@
 import { getAjax } from '@/api/axios'
 import $ from 'jquery'
 export default {
-    created(){
-        console.log(this.getQueryString('code'));
-        this.getInfo();
+  created(){
+    this.getInfo();
+  },
+    mounted(){
+        
     },
   methods: {
     getQueryString(name) {
@@ -19,7 +21,7 @@ export default {
       getAjax('user/oauth/callback?code='+this.getQueryString('code') ).then(res=>{
           console.log(res);
           if(res.status){
-            location.href = localStorage.getItem('url');
+            window.location.href = localStorage.getItem('url');
           }
       })
     }

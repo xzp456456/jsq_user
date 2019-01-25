@@ -6,43 +6,45 @@
           <div class="list">
             <div class="name">pp</div>
             <div class="nd">
-              <div class="jd"  :style="{width:info.F1Flux?(info.F1Flux/info.F1FluxMax)*100+'%':'0%'}"></div>
+              <div class="jd"  :style="{width:info.F1Flux?parseInt((info.F1Flux/info.F1FluxMax)*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">{{info.F1Flux?(info.F1Flux/info.F1FluxMax)*100+'%':'0%'}}</div>
+            <div class="num">{{info.F1Flux?parseInt((info.F1Flux/info.F1FluxMax)*100)+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">udf</div>
             <div class="nd">
-              <div class="jd" :style="{width:info.F2Flux?(info.F2Flux/info.F2FluxMax)*100+'%':'0%'}"></div>
+              <div class="jd" :style="{width:info.F2Flux?parseInt((info.F2Flux/info.F2FluxMax)*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">{{info.F2Flux?(info.F2Flux/info.F2FluxMax)*100+'%':'0%'}}</div>
+            <div class="num">{{info.F2Flux?parseInt((info.F2Flux/info.F2FluxMax)*100)+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">ro</div>
             <div class="nd">
-              <div class="jd" :style="{width:info.F3Flux?(info.F3Flux/info.F3FluxMax*100)+'%':'0%'}"></div>
+              <div class="jd" :style="{width:info.F3Flux?parseInt(info.F3Flux/info.F3FluxMax*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">{{info.F3Flux?(info.F3Flux/info.F3FluxMax*100)+'%':'0%'}}</div>
+            <div class="num">{{info.F3Flux?parseInt(info.F3Flux/info.F3FluxMax*100)+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">t33</div>
             <div class="nd">
-              <div class="jd" :style="{width:info.F4Flux?(info.F4Flux/info.F4FluxMax*100)+'%':'0%'}"></div>
+              <div class="jd" :style="{width:info.F4Flux?parseInt(info.F4Flux/info.F4FluxMax*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">{{info.F4Flux?(info.F4Flux/info.F4FluxMax*100)+'%':'0%'}}</div>
+            <div class="num">{{info.F4Flux?parseInt(info.F4Flux/info.F4FluxMax*100)+'%':'0%'}}</div>
           </div>
           <div class="list">
             <div class="name">pp</div>
             <div class="nd">
-              <div class="jd" :style="{width:info.F5Flux?(info.F5Flux/info.F5FluxMax*100)+'%':'0%'}"></div>
+              <div class="jd" :style="{width:info.F5Flux?parseInt(info.F5Flux/info.F5FluxMax*100)+'%':'0%'}"></div>
             </div>
-            <div class="num">{{info.F5Flux?(info.F5Flux/info.F5FluxMax*100)+'%':'0%'}}</div>
+            <div class="num">{{info.F5Flux?parseInt(info.F5Flux/info.F5FluxMax*100)+'%':'0%'}}</div>
           </div>
         </div>
       </div>
     </header>
     <main>
-      <Btn @actionClick="replaceFilter()">申请更换滤芯</Btn>
+      <Btn @actionClick="replaceFilter()" v-if="isExist==0">申请更换滤芯</Btn>
+      <Btn  v-if="isExist==1">申请中...</Btn>
+      <!-- <Btn  v-if="isExist==1">申请已通过</Btn> -->
       <div class="text_title">滤芯</div>
       <div class="ddItem">
         <div class="ddList">
@@ -74,11 +76,13 @@ export default {
   name: "Element",
   data(){
     return{
-      info:{}
+      info:{},
+      isExist:0
     }
   },
   created(){
-    this.query()
+    this.query();
+    this.inReplaceFilter()
   },
   methods:{
       query(){
@@ -87,6 +91,13 @@ export default {
       .then(res=>{
         
         this.info = res.data
+      })
+    },
+    inReplaceFilter(){
+      postAjax(api.inReplaceFilter,{})
+      .then(res=>{
+        console.log(res);
+          this.isExist = res.data.isExist;
       })
     },
     replaceFilter(){

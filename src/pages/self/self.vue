@@ -39,7 +39,7 @@ export default {
             duration: 1500
           });
           setTimeout(() => {
-            this.$router.push("equipment");
+              this.$router.back(-1);
           }, 1500);
         } else {
           this.Toast({

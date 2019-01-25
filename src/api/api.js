@@ -46,3 +46,7 @@ export const getWxInfo = 'user/user/getWxInfo'
 export const  payOrder = 'user/recharge/payOrder'
 
 export const  bindDevice = 'user/share/bindDevice'
+
+export const  inReplaceFilter = 'user/device/inReplaceFilter'
+
+export const deviceInfo = 'dealer/user/getInfo'
