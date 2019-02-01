@@ -7,8 +7,11 @@
 </template>
 
 <script>
+import { Indicator } from 'mint-ui';
 export default {
-    
+    created(){
+         Indicator.close();
+    }
 }
 </script>
 <style scoped="">

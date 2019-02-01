@@ -50,3 +50,5 @@ export const  bindDevice = 'user/share/bindDevice'
 export const  inReplaceFilter = 'user/device/inReplaceFilter'
 
 export const deviceInfo = 'dealer/user/getInfo'
+
+export const getDeviceBindInfo = 'user/device/getDeviceBindInfo'

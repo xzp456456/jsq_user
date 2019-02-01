@@ -113,7 +113,7 @@ export default {
     
   },
   mounted(){
-      this.query()
+      this.query();
   },
   components:{
     'v-btn':btn

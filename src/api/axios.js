@@ -61,7 +61,7 @@ export const getAjax = (url, param) => {
     return new Promise((resolve, reject) => {
         axios.get(url, {params:param}).then((res) => {
             resolve(res.data);
-        }).then((err) => {
+        }).catch((err) => {
             reject(err);
         })
     })
@@ -81,14 +81,14 @@ export const postAjax = (url, param) => {
                 window.location.href = res.data.data.url;
             }
             resolve(res.data);
-        }).then((err) => {
+        }).catch((err) => {
             reject(err);
         })
     })
 }
 
 export const postFileUp = (url, param) => {
-   // param.openid = 123456;
+    param.openid = 123456;
     return new Promise((resolve, reject) => {
         axios.post(url,param, {
             headers: {

@@ -4,23 +4,57 @@
             <div class="row">
             <div class="deviceid left">设备ID</div>
             <div class="tg">
-                <input type="text" placeholder="请填写设备ID">
+                <input type="text" v-model="help_id"  placeholder="请填写设备ID">
             </div>
             </div>
         </div>
-        <v-btn @actionClick="navgateTo('helpDel')">下一步</v-btn>
+        <v-btn @actionClick="getIdDevice()">下一步</v-btn>
     </div>
 </template>
 <script>
-import btn from '@/components/btn'
+import btn from '@/components/btn';
+import { postAjax, postJquery } from "@/api/axios";
+import * as api from "@/api/api";
 export default {
     components:{
         'v-btn':btn
     },
+    data(){
+        return{
+            help_id:""
+        }
+    },
+    created(){
+        this.getDeviceModelList()
+    },
     methods:{
-        navgateTo(url,help_id){
-            this.$router.push(url);
-            localStorage.setItem('delp_id',delp_id);
+         getIdDevice() {
+         let data = { device_id: this.help_id };
+        postAjax(api.getDeviceBindInfo, data)
+            .then(res => {
+            if(res.status!=1){
+                this.Toast({
+                    message: res.msg,
+                    position: "center",
+                    duration: 1500
+                });
+            }
+            if(res.status==1){
+                this.navgateTo();
+            }
+         })
+       
+    },
+        getDeviceModelList() {
+      postAjax(api.getDeviceModelList, {}).then(res => {
+        console.log(res);
+      });
+    },
+        navgateTo(){
+            let id = this.help_id; 
+            this.$router.push('helpDel');
+            localStorage.setItem('help_id',id);
+            
         }
     }
 }
